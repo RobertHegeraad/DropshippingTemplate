@@ -1,0 +1,103 @@
+/* PAYMENT METHODS */
+#payment-methods {
+
+}
+#payment-methods h3 {
+    text-transform: uppercase;
+}
+#payment-methods ul {
+    list-style-type: none;
+    overflow: hidden;
+}
+#payment-methods li {
+    width: 128px;
+    height: 80px;
+    margin: 5px;
+    float: left;
+    background-size: auto;
+    background-repeat: no-repeat;
+    background-image: url('assets/img/payment_shipping_icons.png');
+    box-shadow: 0 1px 1px rgba(0,0,0,0.4);
+    border-radius: 4px;
+}
+#payment-methods .payment-method-visa {
+    background-position: 0px 0px;
+}
+#payment-methods .payment-method-mastercard {
+    background-position: -128px 0px;
+}
+#payment-methods .payment-method-maestro {
+    background-position: -256px 0px;
+}
+#payment-methods .payment-method-cirrus {
+    background-position: -384px 0px;
+}
+#payment-methods .payment-method-paypal {
+    background-position: -512px 0px;
+}
+#payment-methods .payment-method-western-union {
+    background-position: -640px 0px;
+}
+#payment-methods .payment-method-visa-electron {
+    background-position: -768px 0px;
+}
+#payment-methods .payment-method-amazon {
+    background-position: -896px 0px;
+}
+#payment-methods .payment-method-worldpay {
+    background-position: -1024px 0px;
+}
+#payment-methods .payment-method-diners-club-international {
+    background-position: -1152px 0px;
+}
+#payment-methods .payment-method-google-wallet {
+    background-position: 0px -80px;
+}
+#payment-methods .payment-method-skrill {
+    background-position: -128px -80px;
+}
+#payment-methods .payment-method-sage {
+    background-position: -256px -80px;
+}
+#payment-methods .payment-method-discover {
+    background-position: -384px -80px;
+}
+#payment-methods .payment-method-skrill-moneybookers {
+    background-position: -512px -80px;
+}
+#payment-methods .payment-method-jcb {
+    background-position: -640px -80px;
+}
+#payment-methods .payment-method-ebay {
+    background-position: -768px -80px;
+}
+#payment-methods .payment-method-eway {
+    background-position: -896px -80px;
+}
+#payment-methods .payment-method-solo {
+    background-position: -1024px -80px;
+}
+#payment-methods .payment-method-solo-circle {
+    background-position: -1152px -80px;
+}
+#payment-methods .payment-method-direct-debit {
+    background-position: 0px -160px;
+}
+#payment-methods .payment-method-american-express {
+    background-position: -128px -160px;
+}
+#payment-methods .payment-method-shopify {
+    background-position: -256px -160px;
+}
+#payment-methods .payment-method-ideal {
+    background-position: -384px -160px;
+}
+#payment-methods .payment-method-skrill {
+    background-position: -512px -160px;
+}
+#payment-methods .delivery-method-ups {
+    background-position: -640px -160px;
+}
+#payment-methods .delivery-method-dhl {
+    background-position: -768px -160px;
+}
