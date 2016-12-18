@@ -1,20 +1,24 @@
 <div id="payment-methods" class="row">
 
-    <h3>Payment methods</h3>
-<!--    <div class="is-divider small"></div>-->
-    <ul>
-        <li class="payment-method-visa"></li>
-        <li class="payment-method-mastercard"></li>
-        <li class="payment-method-american-express"></li>
-        <li class="payment-method-paypal"></li>
-        <li class="payment-method-google-wallet"></li>
-    </ul>
+    <div class="large-12 col">
+        <div class="payment-delivery-methods-section">
+            <h3>Payment methods</h3>
+            <ul>
+                <li class="payment-method-visa"></li>
+                <li class="payment-method-mastercard"></li>
+                <li class="payment-method-american-express"></li>
+                <li class="payment-method-paypal"></li>
+                <li class="payment-method-google-wallet"></li>
+            </ul>
+        </div>
 
-    <h3>Delivery methods</h3>
-    <!--    <div class="is-divider small"></div>-->
-    <ul>
-        <li class="delivery-method-ups"></li>
-        <li class="delivery-method-dhl"></li>
-    </ul>
+        <div class="payment-delivery-methods-section payment-delivery-methods-section-right">
+            <h3>Delivery methods</h3>
+            <ul>
+                <li class="delivery-method-ups"></li>
+                <li class="delivery-method-dhl"></li>
+            </ul>
+        </div>
+    </div>
 
 </div>

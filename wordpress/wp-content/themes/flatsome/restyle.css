@@ -1,7 +1,33 @@
-/* PAYMENT METHODS */
-#payment-methods {
-
+/* HEADERS ---------------------------------------------------------------------------------------------------------------------------- */
+h3 {
+    /*border: 2px solid #333333;
+    border-radius: 4px;
+    font-weight: bold;
+    color: #333333;*/
 }
+
+/* PAYMENT METHODS ---------------------------------------------------------------------------------------------------------------------------- */
+
+#payment-methods {
+    overflow: hidden;
+}
+#payment-methods .col {
+    padding-bottom: 20px;
+}
+#payment-methods .payment-delivery-methods-section {
+    width: 55% !important;
+    float: left;
+}
+#payment-methods .payment-delivery-methods-section-right {
+    width: 40% !important;
+    float: right;
+}
+    #payment-methods .payment-delivery-methods-section-right h3 {
+        text-align: right;
+    }
+    #payment-methods .payment-delivery-methods-section-right li {
+        float: right;
+    }
 #payment-methods h3 {
     text-transform: uppercase;
 }
@@ -10,13 +36,13 @@
     overflow: hidden;
 }
 #payment-methods li {
-    width: 128px;
-    height: 80px;
+    width: 70px;
+    height: 44px;
     margin: 5px;
     float: left;
     background-size: auto;
     background-repeat: no-repeat;
-    background-image: url('assets/img/payment_shipping_icons.png');
+    background-image: url('assets/img/payment_shipping_icons_small.png');
     box-shadow: 0 1px 1px rgba(0,0,0,0.4);
     border-radius: 4px;
 }
@@ -24,80 +50,80 @@
     background-position: 0px 0px;
 }
 #payment-methods .payment-method-mastercard {
-    background-position: -128px 0px;
+    background-position: -70px 0px;
 }
 #payment-methods .payment-method-maestro {
-    background-position: -256px 0px;
+    background-position: -140px 0px;
 }
 #payment-methods .payment-method-cirrus {
-    background-position: -384px 0px;
+    background-position: -210px 0px;
 }
 #payment-methods .payment-method-paypal {
-    background-position: -512px 0px;
+    background-position: -280px 0px;
 }
 #payment-methods .payment-method-western-union {
-    background-position: -640px 0px;
+    background-position: -350px 0px;
 }
 #payment-methods .payment-method-visa-electron {
-    background-position: -768px 0px;
+    background-position: -420px 0px;
 }
 #payment-methods .payment-method-amazon {
-    background-position: -896px 0px;
+    background-position: -490px 0px;
 }
 #payment-methods .payment-method-worldpay {
-    background-position: -1024px 0px;
+    background-position: -560px 0px;
 }
 #payment-methods .payment-method-diners-club-international {
-    background-position: -1152px 0px;
+    background-position: -630px 0px;
 }
 #payment-methods .payment-method-google-wallet {
-    background-position: 0px -80px;
+    background-position: 0px -44px;
 }
 #payment-methods .payment-method-skrill {
-    background-position: -128px -80px;
+    background-position: -70px -44px;
 }
 #payment-methods .payment-method-sage {
-    background-position: -256px -80px;
+    background-position: -140px -44px;
 }
 #payment-methods .payment-method-discover {
-    background-position: -384px -80px;
+    background-position: -210px -44px;
 }
 #payment-methods .payment-method-skrill-moneybookers {
-    background-position: -512px -80px;
+    background-position: -280px -44px;
 }
 #payment-methods .payment-method-jcb {
-    background-position: -640px -80px;
+    background-position: -350px -44px;
 }
 #payment-methods .payment-method-ebay {
-    background-position: -768px -80px;
+    background-position: -420px -44px;
 }
 #payment-methods .payment-method-eway {
-    background-position: -896px -80px;
+    background-position: -490px -44px;
 }
 #payment-methods .payment-method-solo {
-    background-position: -1024px -80px;
+    background-position: -560px -44px;
 }
 #payment-methods .payment-method-solo-circle {
-    background-position: -1152px -80px;
+    background-position: -630px -44px;
 }
 #payment-methods .payment-method-direct-debit {
-    background-position: 0px -160px;
+    background-position: 0px -88px;
 }
 #payment-methods .payment-method-american-express {
-    background-position: -128px -160px;
+    background-position: -70px -88px;
 }
 #payment-methods .payment-method-shopify {
-    background-position: -256px -160px;
+    background-position: -140px -88px;
 }
 #payment-methods .payment-method-ideal {
-    background-position: -384px -160px;
+    background-position: -210px -88px;
 }
 #payment-methods .payment-method-skrill {
-    background-position: -512px -160px;
+    background-position: -280px -88px;
 }
 #payment-methods .delivery-method-ups {
-    background-position: -640px -160px;
+    background-position: -350px -88px;
 }
 #payment-methods .delivery-method-dhl {
-    background-position: -768px -160px;
+    background-position: -420px -88px;
 }
