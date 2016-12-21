@@ -29,3 +29,11 @@ function woocommerce_shipping_returns_product_tab_content() {
     wc_get_template_part( 'single-product/tabs/shipping-returns-tab' );
     return;
 }
+
+function get_aliexpress_product() {
+
+}
+
+function import_aliexpress_product() {
+
+}
