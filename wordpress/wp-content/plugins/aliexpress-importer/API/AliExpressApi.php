@@ -35,7 +35,7 @@ class AliExpressApi
     }
 
     private function GetProductDetailsFromApi($aliExpressProductId, $aliExpressProductUrl) {
-        $url = API_URL . PRODUCT_DETAILS_ENDPOINT . APP_KEY . PRODUCT_DETAILS_FIELDS . "&productId=$aliExpressProductId";
+        $url = API_URL . PRODUCT_DETAILS_ENDPOINT . Settings::$APP_KEY . PRODUCT_DETAILS_FIELDS . "&productId=$aliExpressProductId";
         $request = $this->AliExpressRequest($url);
 
         $data = json_decode($request['body'], true);
@@ -72,7 +72,7 @@ class AliExpressApi
     }
 
     public function GetAffiliateLinkFromUrl($aliExpressProductUrl) {
-        $url = API_URL . PRODUCT_PROMOTION_LINKS_ENDPOINT . APP_KEY . "?fields=&trackingId=" . TRACKING_ID . "&urls=$aliExpressProductUrl";
+        $url = API_URL . PRODUCT_PROMOTION_LINKS_ENDPOINT . Settings::$APP_KEY . "?fields=&trackingId=" . Settings::$TRACKING_ID . "&urls=$aliExpressProductUrl";
         $request = $this->AliExpressRequest($url);
 
         $data = json_decode($request['body'], true);
