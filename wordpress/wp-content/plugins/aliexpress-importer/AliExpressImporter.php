@@ -9,44 +9,20 @@
  * License: GPL2
  */
 
-require_once "Settings/Settings.php";
-require_once "Dashboard/Dashboard.php";
-require_once "API/AliExpressApi.php";
-require_once "Import/AliExpressImage.php";
-require_once "Import/AliExpressImporter.php";
-require_once "Order/AliExpressOrder.php";
-
 add_action('admin_menu', 'aliExpressImporterAdminMenu');
 function aliExpressImporterAdminMenu() {
     add_menu_page( 'Aliexpress Importer', 'Aliexpress Importer', 'manage_options', 'test-plugin', 'AliExpressImporterDashboard' );
 }
 
 function AliExpressImporterDashboard() {
-    OnAliExpressProductSubmit();
-
     include_once dirname( __FILE__ ) . '/views/AliExpressImporterDashboard.php';
 }
 
 add_action('wp_ajax_AliExpressImporterGetProduct', 'AliExpressImporterGetProduct');
 function AliExpressImporterGetProduct() {
-    $aliExpressProductUrl = $_REQUEST['url'];
+    $aliExpressProductId = $_REQUEST['id'];
 
-    $aliExpressApi = new AliExpressApi();
-    $results = $aliExpressApi->GetProductDetails($aliExpressProductUrl);
-
-    echo json_encode(array('results' => $results));
-    wp_die();
-}
-
-function OnAliExpressProductSubmit() {
-    $product = $_REQUEST;
-
-    if(is_null($product['import-product'])) {
-        return;
-    }
-
-    $aliExpressImporter = new AliExpressImporter();
-    $aliExpressImporter->ImportProduct($product);
+    return json_encode(array('product id' => 'id: ' . $aliExpressProductId));
 }
 
 /* ---------------------------------------------------------------------------------------------------------------------------- */
