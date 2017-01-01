@@ -22,4 +22,4 @@ const PRODUCT_PROMOTION_LINKS_ENDPOINT = "api.getPromotionLinks/";
 
 const PROMOTION_LINK_URL = "http://s.click.aliexpress.com/deep_link.htm";
 
-const PROMOTION_LINK_FIELDS = "?dl_target_url={dl_target_url}&aff_short_key={aff_short_key}";
+const PROMOTION_LINK_FIELDS = "?dl_target_url=%s&aff_short_key=%s";

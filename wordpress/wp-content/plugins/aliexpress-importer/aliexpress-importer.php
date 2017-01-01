@@ -49,6 +49,12 @@ function OnAliExpressProductSubmit() {
     $aliExpressImporter->ImportProduct($product);
 }
 
+add_action( 'woocommerce_before_order_itemmeta', 'action_woocommerce_before_order_itemmeta', 10, 3 );
+function action_woocommerce_before_order_itemmeta( $item_id, $product, $order) {
+    $aliExpressOrder = new AliExpressOrder();
+    echo $aliExpressOrder->GetAliEpxressProductOrderLink($product['product_id']);
+};
+
 /* ---------------------------------------------------------------------------------------------------------------------------- */
 
 $dashboard = new Dashboard();

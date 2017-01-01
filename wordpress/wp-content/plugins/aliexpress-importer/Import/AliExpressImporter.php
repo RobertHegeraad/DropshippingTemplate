@@ -91,13 +91,14 @@ class AliExpressImporter {
     }
 
     private function ImportProductAttributes($post_id, $product) {
+        // Does the product have an affiliate link?
         if($product['product-promotion-url'] == "") {
             return;
         }
 
         $attributes = array(
             'pa_product_id' => $product['product-id'],
-//            'pa_product_promotion_url' => $product['product-promotion-url'],
+            'pa_product_url' => $product['product-url'],
             'pa_affiliate_short_key' => $product['affiliate_short_key'],
             'pa_product_store_name' => $product['product-store-name'],
             'pa_product_store_url' => $product['product-store-url']

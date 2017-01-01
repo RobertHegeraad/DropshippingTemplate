@@ -5,6 +5,33 @@
  * Date: 30-12-2016
  * Time: 18:03
  */
+
+global $wpdb;
+
+$orders = get_posts( array(
+    'post_type'   => 'shop_order',
+    'posts_per_page' => '-1'
+));
+
+echo "ORDERS<br/>";
+foreach($orders as $order) {
+    $order_detail = new WC_Order( $order->ID );
+    $items = $order_detail->get_items();
+
+    foreach ( $items as $item ) {
+        $post_id = $item['product_id'];
+
+        $product_store_url = wc_get_product_terms($post_id, 'pa_product_store_url', array());
+        $product_store_name = wc_get_product_terms($post_id, 'pa_product_store_name', array());
+        $product_id = wc_get_product_terms($post_id, 'pa_product_id', array());
+        $affiliate_short_key = wc_get_product_terms($post_id, 'pa_affiliate_short_key', array());
+    }
+}
+
+echo "<pre>";
+var_dump($affiliate_short_key );
+echo "</pre>";
+
 ?>
 
 <style>
