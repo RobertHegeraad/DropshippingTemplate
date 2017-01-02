@@ -277,6 +277,7 @@
             var productId,
                 productTitle,
                 productImages = [],
+                productThumbnail,
                 $productImages,
                 productPrice,
                 productStock,
@@ -298,10 +299,15 @@
                 storeName = $html.find(".shop-name a").html();
                 storeUrl = $html.find(".shop-name a").attr('href');
 
+                productThumbnail = $html.find('.ui-image-viewer-thumb-frame img').attr('src');
                 $productImages = $html.find('.img-thumb-item img');
 
-                for (var i = 0; i < $productImages.length; i++) {
-                    productImages.push($productImages[i].src);
+                if($productImages.length == 0) {
+                    productImages.push(productThumbnail);
+                } else {
+                    for (var i = 0; i < $productImages.length; i++) {
+                        productImages.push($productImages[i].src);
+                    }
                 }
             }
 
