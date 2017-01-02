@@ -1,0 +1,20 @@
+{
+	"name": "Dropshipping",
+	"description": "",
+	"version": "1.0.0",
+	"manifest_version": 2,
+	 "content_scripts": [
+		{
+		  "matches": ["http://antiskimpas.nl/*"],
+		  "css": ["css/style.css"],
+		  "js": ["js/jquery.js", "js/script.js"]
+		},
+		{
+		  // "matches": ["https://shoppingcart.aliexpress.com/order/confirm_order.htm"],
+		  "matches": ["*://*.aliexpress.com/*"],
+		  "css": ["css/style.css"],
+		  "js": ["js/jquery.js", "js/script.js"]
+		}
+	],
+	"permissions": ["tabs", "<all_urls>", "storage"]
+}
