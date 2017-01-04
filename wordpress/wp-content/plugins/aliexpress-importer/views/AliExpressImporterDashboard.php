@@ -135,6 +135,9 @@
 
     <h1>AliExpress Importer</h1>
 
+    <p>
+        https://nl.aliexpress.com/item/Original-Razer-Kraken-Pro-Gaming-Headset-Game-Headphone-Computer-Earphone-Noise-Isolating-Earbuds-With-Mic-BOX/32601753013.html
+    </p>
     <input id="product-url-input" type="text" name="product-url-input" placeholder="Enter an AliExpress product URL" value="https://nl.aliexpress.com/item/2016-With-Iron-Core-New-Quality-Deluxe-COS-Albus-Dumbledore-Magic-Wand-of-Harry-Potter-Magical/32691894636.html">
 
     <button id="get-product">Get Product</button>
@@ -299,16 +302,16 @@
                 storeName = $html.find(".shop-name a").html();
                 storeUrl = $html.find(".shop-name a").attr('href');
 
-                productThumbnail = $html.find('.ui-image-viewer-thumb-frame img').attr('src');
+//                productThumbnail = $html.find('.ui-image-viewer-thumb-frame img').attr('src');
                 $productImages = $html.find('.img-thumb-item img');
-
-                if($productImages.length == 0) {
-                    productImages.push(productThumbnail);
-                } else {
+//
+//                if($productImages.length == 0) {
+//                    productImages.push(productThumbnail);
+//                } else {
                     for (var i = 0; i < $productImages.length; i++) {
                         productImages.push($productImages[i].src);
                     }
-                }
+//                }
             }
 
             if(data.results.API.success) {

@@ -63,7 +63,7 @@ class AliExpressImporter {
     private function ImportImages($post_id, $product) {
         $aliExpressImage = new AliExpressImage();
         $aliExpressImage->UploadProductThumbnail($product['product-images'][$product['product-thumbnail-index']], $post_id);
-        @unlink($product['product-images'][0]);
+        unset($product['product-images'][$product['product-thumbnail-index']]); // TODO: unlink product-thumbnail-index
         $aliExpressImage->UploadProductGallery($product['product-images'], $post_id);
     }
 

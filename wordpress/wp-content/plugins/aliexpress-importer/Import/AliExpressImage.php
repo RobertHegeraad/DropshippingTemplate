@@ -63,7 +63,9 @@ class AliExpressImage {
             $tmp = download_url($resizedUrl);
             $file_array['name'] = basename($resizedUrl);
             $file_array['tmp_name'] = $tmp;
-            $productImagesIds[] = media_handle_sideload( $file_array, $post_id, 'desc' );
+            $file_array['error'] = 0;
+            $file_array['size'] = filesize($tmp);
+            $productImagesIds[] = @media_handle_sideload( $file_array, $post_id, 'desc' );
         }
         update_post_meta($post_id, '_product_image_gallery', implode(",", $productImagesIds));
     }
