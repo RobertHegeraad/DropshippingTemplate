@@ -34,7 +34,7 @@ class AliExpressApi
         return $result;
     }
 
-    private function GetProductDetailsFromApi($aliExpressProductId, $aliExpressProductUrl) {
+    public function GetProductDetailsFromApi($aliExpressProductId, $aliExpressProductUrl) {
         $url = API_URL . PRODUCT_DETAILS_ENDPOINT . Settings::$APP_KEY . PRODUCT_DETAILS_FIELDS . "&productId=$aliExpressProductId";
         $request = $this->AliExpressRequest($url);
 
@@ -56,7 +56,7 @@ class AliExpressApi
         }
     }
 
-    private function GetProductDetailsFromUrl($aliExpressProductId, $aliExpressProductUrl) {
+    public function GetProductDetailsFromUrl($aliExpressProductId, $aliExpressProductUrl) {
         $result = $this->GetAliExpressProductViaCurlRequest($aliExpressProductUrl);
 
         if($result['errno'] != 0 || $result['http_code'] != 200) {

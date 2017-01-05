@@ -297,7 +297,6 @@
                 productId = data.results.URL.productId;
                 productTitle = $html.find(".product-name").html();  // TODO: Parse price from string
                 productPrice = $html.find(".p-price").html();
-                productStock = parseInt($html.find('#j-sell-stock-num').html());
                 productUrl = data.results.URL.product.productUrl;
                 storeName = $html.find(".shop-name a").html();
                 storeUrl = $html.find(".shop-name a").attr('href');

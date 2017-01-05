@@ -21,6 +21,7 @@ add_action('admin_menu', 'aliExpressImporterAdminMenu');
 function aliExpressImporterAdminMenu() {
     add_menu_page( 'Aliexpress Importer', 'Aliexpress Importer', 'manage_options', 'test-plugin', 'AliExpressImporterDashboard' );
     add_submenu_page('test-plugin', 'Settings', 'Settings', 'manage_options', 'aliexpress-importer-settings', 'AliExpressImporterSettings');
+    add_submenu_page('test-plugin', 'Update stock', 'Update stock', 'manage_options', 'aliexpress-importer-update-stock', 'AliExpressImporterStock');
 }
 
 function AliExpressImporterDashboard() {
@@ -31,6 +32,10 @@ function AliExpressImporterDashboard() {
 
 function AliExpressImporterSettings() {
     include_once dirname( __FILE__ ) . '/views/AliExpressImporterSettings.php';
+}
+
+function AliExpressImporterStock() {
+    include_once dirname( __FILE__ ) . '/views/AliExpressImporterStock.php';
 }
 
 add_action( 'admin_init', 'aliexpress_settings_register' );
@@ -50,6 +55,33 @@ function AliExpressImporterGetProduct() {
     $results = $aliExpressApi->GetProductDetails($aliExpressProductUrl);
 
     echo json_encode(array('results' => $results));
+    wp_die();
+}
+
+add_action('wp_ajax_AliExpressImporterGetProducts', 'AliExpressImporterGetProducts');
+function AliExpressImporterGetProducts() {
+    $products = get_posts(array( 'post_type' => array('product'), 'posts_per_page' => -1 ));
+
+    $aliExpressApi = new AliExpressApi();
+
+    foreach($products as &$product) {
+        $product->product_id = wc_get_product_terms($product->ID, 'pa_product_id', array('fields' => 'names'))[0];
+        $product->product_url = wc_get_product_terms($product->ID, 'pa_product_url', array('fields' => 'names'))[0];
+        $product->product_html = $aliExpressApi->GetProductDetailsFromUrl($product->product_id, $product->product_url);
+    }
+
+    echo json_encode(array('results' => $products));
+    wp_die();
+}
+
+add_action('wp_ajax_AliExpressImporterUpdateStock', 'AliExpressImporterUpdateStock');
+function AliExpressImporterUpdateStock() {
+    $product = $_REQUEST;
+
+    $aliExpressImporter = new AliExpressImporter();
+    $aliExpressImporter->UpdateStockForProduct($product);
+
+    echo json_encode(array('results' => $product));
     wp_die();
 }
 
