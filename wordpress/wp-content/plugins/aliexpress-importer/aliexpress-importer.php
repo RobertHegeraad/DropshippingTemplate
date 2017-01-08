@@ -64,10 +64,19 @@ function AliExpressImporterGetProducts() {
 
     $aliExpressApi = new AliExpressApi();
 
-    foreach($products as &$product) {
+    foreach ($products as &$product) {
         $product->product_id = wc_get_product_terms($product->ID, 'pa_product_id', array('fields' => 'names'))[0];
         $product->product_url = wc_get_product_terms($product->ID, 'pa_product_url', array('fields' => 'names'))[0];
         $product->product_html = $aliExpressApi->GetProductDetailsFromUrl($product->product_id, $product->product_url);
+        $product->variations = array();
+
+        $variable_product = new WC_Product_Variable($product->ID);
+        $variations = $variable_product->get_available_variations();
+        if(!is_null($variations) && count($variations) > 0) {
+            foreach($variations as $variation) {
+                $product->variations[$variation['sku']] = $variation['variation_id'];
+            }
+        }
     }
 
     echo json_encode(array('results' => $products));

@@ -58,7 +58,21 @@
                 if(product.product_html.success) {
                     var stock = /window\.runParams\.totalAvailQuantity=([0-9]+);/.exec(product.product_html.product);
 
-                    UpdateStockForProduct(product.ID, stock[1], product.product_url);
+                    var variations = [];
+                    var skuProducts = JSON.parse(/var skuProducts=(\[.+\])/.exec(product.product_html.product)[1]);
+                    for(var j=0; j<skuProducts.length; j++) {
+                        skuProducts[j].skuProductStocks = skuProducts[j].skuVal.availQuantity;
+                        skuProducts[j].skuProductSkus = skuProducts[j].skuPropIds;
+
+                        variations.push({
+                            "variation_id": product.variations[skuProducts[j].skuPropIds],
+                            "stock": skuProducts[j].skuVal.availQuantity
+                        });
+                    }
+
+                    console.log(variations);
+
+                    UpdateStockForProduct(product.ID, stock[1], product.product_url, variations);
                 } else {
                     var html = '<li>';
                     html += 'Product ' + product.ID;
@@ -77,20 +91,32 @@
             }
         }
 
-        function UpdateStockForProduct(product_id, product_stock, product_url) {
+        function UpdateStockForProduct(product_id, product_stock, product_url, variations) {
             $.ajax({
                 type: "GET",
                 url: ajaxurl,
                 dataType: "json",
                 data: {
                     action: 'AliExpressImporterUpdateStock',
-                    product: { product_id: product_id, product_stock: product_stock } },
+                    product: { product_id: product_id, product_stock: product_stock, variations: variations }
+                },
                 success: function(data) {
                     console.log(data);
 
+                    var stockError = data.results.product.product_stock < 50 ? "orange" : "black";
+
                     var html = '<li>';
                     html += 'Product ' + product_id;
-                    html += ' stock updated to <strong>' + data.results.product.product_stock + '</strong><br/>';
+                    html += ' total stock updated to <strong style="color: ' + stockError + '">' + data.results.product.product_stock + '</strong><br/>';
+
+                    for(var i=0; i<data.results.product.variations.length; i++) {
+                        var variation = data.results.product.variations[i];
+                        var variationStockError = variation.stock < 50 ? "orange" : "black";
+
+                        html += 'Product variation ' + variation.variation_id;
+                        html += ' varation stock updated to <strong style="color: ' + variationStockError + '">' + variation.stock + '</strong><br/>';
+                    }
+
                     html += '<a href="' + product_url + '">View product on AliExpress</a>';
                     html += '</li>';
 

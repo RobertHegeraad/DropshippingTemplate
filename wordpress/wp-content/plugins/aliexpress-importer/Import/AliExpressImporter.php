@@ -159,6 +159,7 @@ class AliExpressImporter {
                 'post_type' => "product_variation",
             ));
 
+            update_post_meta($variation_id, '_manage_stock', "yes");
             update_post_meta($variation_id, 'attribute_pa_color', $string = preg_replace("/[\s_]/", "-", strtolower($product['skuProductTitles'][$i])));    // TODO: Color not being selected
             update_post_meta($variation_id, '_price', $product['skuProductPrices'][$i]);
             update_post_meta($variation_id, '_regular_price', $product['skuProductPrices'][$i]);
@@ -200,6 +201,13 @@ class AliExpressImporter {
     }
 
     public function UpdateStockForProduct($data) {
+        if(!is_null($data['product']['variations']) && count($data['product']['variations']) > 0) {
+            foreach($data['product']['variations'] as $variation) {
+                wc_update_product_stock($variation['variation_id'], $variation['stock']);
+            }
+        }
+
         wc_update_product_stock($data['product']['product_id'], $data['product']['product_stock']);
+
     }
 }

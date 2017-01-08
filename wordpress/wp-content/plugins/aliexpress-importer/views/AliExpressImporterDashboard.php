@@ -312,6 +312,8 @@
                 for(var j=0; j<skuProducts.length; j++) {
                     skuProducts[j].skuProductImage = $html.find("a[data-sku-id=" + skuProducts[j].skuPropIds + "] img").attr('src');
                     skuProducts[j].skuProductTitle = $html.find("a[data-sku-id=" + skuProducts[j].skuPropIds + "]").attr('title');
+                    skuProducts[j].skuProductStocks = skuProducts[j].skuVal.availQuantity;
+                    skuProducts[j].skuProductSkus = skuProducts[j].skuPropIds;
                 }
 
                 console.log(skuProducts);
