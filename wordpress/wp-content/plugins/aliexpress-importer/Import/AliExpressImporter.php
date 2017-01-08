@@ -8,6 +8,12 @@
 
 class AliExpressImporter {
 
+    private $aliExpressImage;
+
+    public function __construct() {
+        $this->aliExpressImage = new AliExpressImage();
+    }
+
     public function ImportProduct($product) {
 
         $post_id = $this->InsertProduct($product);
@@ -17,6 +23,12 @@ class AliExpressImporter {
             // TODO: Show notification
 
             return;
+        }
+
+        if(count($product['skuProductTitles']) > 1) {
+            wp_set_object_terms($post_id, 'variable', 'product_type');
+        } else {
+            wp_set_object_terms($post_id, 'simple', 'product_type');
         }
 
         // Affiliate short key
@@ -34,8 +46,11 @@ class AliExpressImporter {
         // Price
         $this->ImportPrice($post_id, $product);
 
-        // Product attributes (Promotion Url)
+        // Product attributes (Promotion Url etc)
         $this->ImportProductAttributes($post_id, $product);
+
+        // Product variations
+        $this->ImportProductVariations($post_id, $product);
 
         // Meta
         $this->ImportMeta($post_id, $product);
@@ -53,7 +68,7 @@ class AliExpressImporter {
         return wp_insert_post(array(
             'post_author' => get_current_user_id(),
             'post_content' => $product['product-description'],
-            'post_status' => "publish",
+            'post_status' => $product['product-active'] == 'on' ? 'publish' : 'draft',
             'post_title' => $product['product-title'],
             'post_parent' => '',
             'post_type' => "product",
@@ -61,10 +76,9 @@ class AliExpressImporter {
     }
 
     private function ImportImages($post_id, $product) {
-        $aliExpressImage = new AliExpressImage();
-        $aliExpressImage->UploadProductThumbnail($product['product-images'][$product['product-thumbnail-index']], $post_id);
+        $this->aliExpressImage->UploadProductThumbnail($product['product-images'][$product['product-thumbnail-index']], $post_id);
         unset($product['product-images'][$product['product-thumbnail-index']]); // TODO: unlink product-thumbnail-index
-        $aliExpressImage->UploadProductGallery($product['product-images'], $post_id);
+        $this->aliExpressImage->UploadProductGallery($product['product-images'], $post_id);
     }
 
     private function ImportCategories($post_id, $product) {
@@ -119,12 +133,43 @@ class AliExpressImporter {
             );
         }
 
+        wp_set_object_terms($post_id, $product['skuProductTitles'], 'pa_color');
+
+        $product_attributes['pa_color'] = array(
+            'name'=> 'pa_color',
+            'value'=> '',
+            'is_visible' => '1',
+            'is_variation' => '1',
+            'is_taxonomy' => '1'
+        );
+
         update_post_meta($post_id, '_product_attributes', $product_attributes);
     }
 
+    private function ImportProductVariations($post_id, $product) {
+
+        for($i=0; $i<count($product['skuProductTitles']); $i++) {
+
+            $variation_id = wp_insert_post(array(
+                'post_author' => get_current_user_id(),
+                'post_status' => "publish",
+                'post_name' => '',
+                'post_title' => '',
+                'post_parent' => $post_id,
+                'post_type' => "product_variation",
+            ));
+
+            update_post_meta($variation_id, 'attribute_pa_color', $string = preg_replace("/[\s_]/", "-", strtolower($product['skuProductTitles'][$i])));    // TODO: Color not being selected
+            update_post_meta($variation_id, '_price', $product['skuProductPrices'][$i]);
+            update_post_meta($variation_id, '_regular_price', $product['skuProductPrices'][$i]);
+            update_post_meta($variation_id, '_sku', $product['skuProductSkus'][$i]);
+            wc_update_product_stock($variation_id, $product['skuProductStocks'][$i]);
+            $this->aliExpressImage->UploadProductThumbnail($product['skuProductImages'][$i], $variation_id);
+        }
+    }
+
     private function ImportMeta($post_id, $product) {
-        wp_set_object_terms($post_id, 'simple', 'product_type');
-        update_post_meta( $post_id, '_visibility', 'visible' ); // TODO: Set visibility with $product['product-active']
+        update_post_meta( $post_id, '_visibility', 'visible');
         update_post_meta( $post_id, '_stock_status', 'instock');
         update_post_meta( $post_id, 'total_sales', '0');
         update_post_meta( $post_id, '_downloadable', 'no');

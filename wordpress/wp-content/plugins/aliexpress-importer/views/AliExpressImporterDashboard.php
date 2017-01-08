@@ -54,7 +54,7 @@
         width: 200px;
         height: 200px;
     }
-    .importer .sub-images img {
+    .importer .sub-images img, .importer .skuProductImage {
         width: 50px;
         height: 50px;
         margin: 10px;
@@ -136,9 +136,9 @@
     <h1>AliExpress Importer</h1>
 
     <p>
-        https://nl.aliexpress.com/item/Original-Razer-Kraken-Pro-Gaming-Headset-Game-Headphone-Computer-Earphone-Noise-Isolating-Earbuds-With-Mic-BOX/32601753013.html
+        https://nl.aliexpress.com/item/2016-With-Iron-Core-New-Quality-Deluxe-COS-Albus-Dumbledore-Magic-Wand-of-Harry-Potter-Magical/32691894636.html
     </p>
-    <input id="product-url-input" type="text" name="product-url-input" placeholder="Enter an AliExpress product URL" value="https://nl.aliexpress.com/item/2016-With-Iron-Core-New-Quality-Deluxe-COS-Albus-Dumbledore-Magic-Wand-of-Harry-Potter-Magical/32691894636.html">
+    <input id="product-url-input" type="text" name="product-url-input" placeholder="Enter an AliExpress product URL" value="https://nl.aliexpress.com/item/Original-Razer-Kraken-Pro-Gaming-Headset-Game-Headphone-Computer-Earphone-Noise-Isolating-Earbuds-With-Mic-BOX/32601753013.html">
 
     <button id="get-product">Get Product</button>
 
@@ -167,7 +167,7 @@
                 </tr>
             </thead>
 
-            <tbody>
+            <tbody id="product-form-tbody">
                 <tr>
                     <td class="product-images-col">
                         <div class="form-section product-images-form-section">
@@ -288,7 +288,8 @@
                 promotionUrl,
                 storeUrl,
                 storeName,
-                productIsAffiliate = false;
+                productIsAffiliate = false,
+                skuProducts;
 
             if(data.results.URL.success) {
 
@@ -301,16 +302,19 @@
                 storeName = $html.find(".shop-name a").html();
                 storeUrl = $html.find(".shop-name a").attr('href');
 
-//                productThumbnail = $html.find('.ui-image-viewer-thumb-frame img').attr('src');
                 $productImages = $html.find('.img-thumb-item img');
-//
-//                if($productImages.length == 0) {
-//                    productImages.push(productThumbnail);
-//                } else {
-                    for (var i = 0; i < $productImages.length; i++) {
-                        productImages.push($productImages[i].src);
-                    }
-//                }
+                for (var i = 0; i < $productImages.length; i++) {
+                    productImages.push($productImages[i].src);
+                }
+
+                // Get product variations
+                skuProducts = JSON.parse(/var skuProducts=(\[.+\])/.exec(data.results.URL.product)[1]);
+                for(var j=0; j<skuProducts.length; j++) {
+                    skuProducts[j].skuProductImage = $html.find("a[data-sku-id=" + skuProducts[j].skuPropIds + "] img").attr('src');
+                    skuProducts[j].skuProductTitle = $html.find("a[data-sku-id=" + skuProducts[j].skuPropIds + "]").attr('title');
+                }
+
+                console.log(skuProducts);
             }
 
             if(data.results.API.success) {
@@ -357,7 +361,8 @@
                 promotionUrl,
                 storeUrl,
                 storeName,
-                productIsAffiliate
+                productIsAffiliate,
+                skuProducts
             );
         }
 
@@ -398,7 +403,8 @@
             promotionUrl,
             storeUrl,
             storeName,
-            productIsAffiliate)
+            productIsAffiliate,
+            skuProducts)
         {
             $("#product-id").val(productId);
             $("#product-title").val(productTitle);
@@ -427,6 +433,19 @@
                 html = html.replace("{value}", productImages[i]);
                 html = html.replace("{index}", i);
                 $(".sub-images").append(html);
+            }
+
+            if(skuProducts.length > 1) {
+                for (var j = 0; j < skuProducts.length; j++) {
+                    var html = '<tr>';
+                    html += '<td><img class="skuProductImage" src="' + skuProducts[j].skuProductImage + '"/><input type="hidden" name="skuProductImages[]" value="' + skuProducts[j].skuProductImage + '"></td>';
+                    html += '<td colspan="2"><input type="text" name="skuProductTitles[]" value="' + skuProducts[j].skuProductTitle + '"/></td>';
+                    html += '<td><input type="text" name="skuProductPrices[]" value="' + formattedPrice + '"/></td>';
+                    html += '<td>SKU: ' + skuProducts[j].skuPropIds + '<input type="hidden" name="skuProductSkus[]" value="' + skuProducts[j].skuPropIds + '"/></td>';
+                    html += '<td>Stock: ' + skuProducts[j].skuVal.availQuantity + '<input type="hidden" name="skuProductStocks[]" value="' + skuProducts[j].skuVal.availQuantity + '"/></td>';
+                    html += '</tr>';
+                    $("#product-form-tbody").append(html);
+                }
             }
 
             $("#get-product").html("Get product").removeAttr('disabled');
