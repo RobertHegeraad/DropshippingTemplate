@@ -140,15 +140,15 @@ class AliExpressImporter {
             'is_taxonomy' => '1'
         );
 
-        wp_set_object_terms($post_id, array('small', 'medium', 'big'), 'pa_size');
-
-        $product_attributes['pa_size'] = array(
-            'name'=> 'pa_size',
-            'value'=> '',
-            'is_visible' => '1',
-            'is_variation' => '1',
-            'is_taxonomy' => '1'
-        );
+//        wp_set_object_terms($post_id, array('small', 'medium', 'big'), 'pa_size');
+//
+//        $product_attributes['pa_size'] = array(
+//            'name'=> 'pa_size',
+//            'value'=> '',
+//            'is_visible' => '1',
+//            'is_variation' => '1',
+//            'is_taxonomy' => '1'
+//        );
 
         update_post_meta($post_id, '_product_attributes', $product_attributes);
     }
@@ -168,7 +168,7 @@ class AliExpressImporter {
 
             update_post_meta($variation_id, '_manage_stock', "yes");
             update_post_meta($variation_id, $product['skuProductAttribute'][$i], $string = preg_replace("/[\s_]/", "-", strtolower($product['skuProductTitles'][$i]))); // Convert title to slug
-            update_post_meta($variation_id, "attribute_pa_size", "big"); // Convert title to slug
+//            update_post_meta($variation_id, "attribute_pa_size", "big");
             update_post_meta($variation_id, '_price', $product['skuProductPrices'][$i]);
             update_post_meta($variation_id, '_regular_price', $product['skuProductPrices'][$i]);
             update_post_meta($variation_id, '_sku', $product['skuProductSkus'][$i]);

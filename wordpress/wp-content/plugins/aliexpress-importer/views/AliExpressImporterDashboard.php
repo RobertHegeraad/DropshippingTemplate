@@ -334,6 +334,7 @@
                 for(var j=0; j<skuProductsFromUrl.length; j++) {
                     if(skuProductsFromUrl[j].skuPropIds == "") break;
 
+                    // TODO: Import product variation combination
                     var skuId = skuProductsFromUrl[j].skuPropIds.split(",")[0];
                     if($.inArray(skuId, loadedSkuIds) != -1) {
                         continue;
