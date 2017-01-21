@@ -22,7 +22,7 @@ class AliExpressImage {
         return $convertedUrl;
     }
 
-    public function UploadProductThumbnail($aliExpressImageUrl, $post_id) {
+    public function UploadProductThumbnail($aliExpressImageUrl, $post_id, $post_title) {
         $resizedUrl = $this->ConvertImageTo640x640($aliExpressImageUrl);
         $upload_file = wp_upload_bits("temp-" . $post_id . ".jpg", null, file_get_contents($resizedUrl));
 
@@ -35,7 +35,7 @@ class AliExpressImage {
         $attachment = array(
             'guid'           => wp_upload_dir()['url'] . '/' . basename( $filename ),
             'post_mime_type' => $filetype['type'],
-            'post_title'     => preg_replace( '/\.[^.]+$/', '', basename( $filename ) ),
+            'post_title'     => $post_title,
             'post_content'   => '',
             'post_status'    => 'inherit'
         );
@@ -48,12 +48,12 @@ class AliExpressImage {
         $attach_data = wp_generate_attachment_metadata( $attach_id, $filename );
         wp_update_attachment_metadata( $attach_id, $attach_data );
 
-        unlink($upload_file['file']);
+//        unlink($upload_file['file']);
 
         set_post_thumbnail($post_id, $attach_id);
     }
 
-    function UploadProductGallery($productImages, $post_id) {
+    function UploadProductGallery($productImages, $post_id, $post_title) {
         require_once(ABSPATH . 'wp-admin/includes/file.php');
         require_once(ABSPATH . 'wp-admin/includes/media.php');
 
@@ -65,7 +65,7 @@ class AliExpressImage {
             $file_array['tmp_name'] = $tmp;
             $file_array['error'] = 0;
             $file_array['size'] = filesize($tmp);
-            $productImagesIds[] = @media_handle_sideload( $file_array, $post_id, 'desc' );
+            $productImagesIds[] = @media_handle_sideload( $file_array, $post_id, $post_title );
         }
         update_post_meta($post_id, '_product_image_gallery', implode(",", $productImagesIds));
     }

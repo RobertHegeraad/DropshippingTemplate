@@ -54,6 +54,18 @@ function AliExpressImporterGetProduct() {
     $aliExpressApi = new AliExpressApi();
     $results = $aliExpressApi->GetProductDetails($aliExpressProductUrl);
 
+    $results['productAttributes'] = array();
+    $productAttributes = wc_get_attribute_taxonomies();
+    foreach($productAttributes as $productAttribute) {
+        if($productAttribute->attribute_name != 'affiliate_short_key' &&
+            $productAttribute->attribute_name != 'product_id' &&
+            $productAttribute->attribute_name != 'product_store_name' &&
+            $productAttribute->attribute_name != 'product_store_url' &&
+            $productAttribute->attribute_name != 'product_url') {
+            $results['productAttributes'][] = $productAttribute;
+        }
+    }
+
     echo json_encode(array('results' => $results));
     wp_die();
 }

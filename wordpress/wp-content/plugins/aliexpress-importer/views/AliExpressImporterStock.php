@@ -105,7 +105,7 @@
 
                     var stockError = data.results.product.product_stock < 50 ? "orange" : "black";
 
-                    var html = '<li>';
+                    var html = '<li>';ni
                     html += 'Product ' + product_id;
                     html += ' total stock updated to <strong style="color: ' + stockError + '">' + data.results.product.product_stock + '</strong><br/>';
 

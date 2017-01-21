@@ -76,9 +76,9 @@ class AliExpressImporter {
     }
 
     private function ImportImages($post_id, $product) {
-        $this->aliExpressImage->UploadProductThumbnail($product['product-images'][$product['product-thumbnail-index']], $post_id);
-        unset($product['product-images'][$product['product-thumbnail-index']]); // TODO: unlink product-thumbnail-index
-        $this->aliExpressImage->UploadProductGallery($product['product-images'], $post_id);
+        $this->aliExpressImage->UploadProductThumbnail($product['product-images'][$product['product-thumbnail-index']], $post_id, $product['product-title']);
+        unset($product['product-images'][$product['product-thumbnail-index']]);
+        $this->aliExpressImage->UploadProductGallery($product['product-images'], $post_id, $product['product-title']);
     }
 
     private function ImportCategories($post_id, $product) {
@@ -105,11 +105,6 @@ class AliExpressImporter {
     }
 
     private function ImportProductAttributes($post_id, $product) {
-        // Does the product have an affiliate link?
-        if($product['product-promotion-url'] == "") {
-            return;
-        }
-
         $attributes = array(
             'pa_product_id' => $product['product-id'],
             'pa_product_url' => $product['product-url'],
@@ -133,10 +128,22 @@ class AliExpressImporter {
             );
         }
 
+        // TODO: Dynamically add other attributes
+
         wp_set_object_terms($post_id, $product['skuProductTitles'], 'pa_color');
 
         $product_attributes['pa_color'] = array(
             'name'=> 'pa_color',
+            'value'=> '',
+            'is_visible' => '1',
+            'is_variation' => '1',
+            'is_taxonomy' => '1'
+        );
+
+        wp_set_object_terms($post_id, array('small', 'medium', 'big'), 'pa_size');
+
+        $product_attributes['pa_size'] = array(
+            'name'=> 'pa_size',
             'value'=> '',
             'is_visible' => '1',
             'is_variation' => '1',
@@ -160,12 +167,16 @@ class AliExpressImporter {
             ));
 
             update_post_meta($variation_id, '_manage_stock', "yes");
-            update_post_meta($variation_id, 'attribute_pa_color', $string = preg_replace("/[\s_]/", "-", strtolower($product['skuProductTitles'][$i])));    // TODO: Color not being selected
+            update_post_meta($variation_id, $product['skuProductAttribute'][$i], $string = preg_replace("/[\s_]/", "-", strtolower($product['skuProductTitles'][$i]))); // Convert title to slug
+            update_post_meta($variation_id, "attribute_pa_size", "big"); // Convert title to slug
             update_post_meta($variation_id, '_price', $product['skuProductPrices'][$i]);
             update_post_meta($variation_id, '_regular_price', $product['skuProductPrices'][$i]);
             update_post_meta($variation_id, '_sku', $product['skuProductSkus'][$i]);
             wc_update_product_stock($variation_id, $product['skuProductStocks'][$i]);
-            $this->aliExpressImage->UploadProductThumbnail($product['skuProductImages'][$i], $variation_id);
+
+            if($product['skuProductImages'][$i] != "undefined") {
+                $this->aliExpressImage->UploadProductThumbnail($product['skuProductImages'][$i], $variation_id, $product['product-title']);
+            }
         }
     }
 

@@ -129,6 +129,11 @@
         text-align: center;
     }
 
+    .importer .remove-skuProductRow {
+        cursor: pointer;
+        text-decoration: underline;
+    }
+
 </style>
 
 <div class="importer">
@@ -138,7 +143,16 @@
     <p>
         https://nl.aliexpress.com/item/2016-With-Iron-Core-New-Quality-Deluxe-COS-Albus-Dumbledore-Magic-Wand-of-Harry-Potter-Magical/32691894636.html
     </p>
-    <input id="product-url-input" type="text" name="product-url-input" placeholder="Enter an AliExpress product URL" value="https://nl.aliexpress.com/item/Original-Razer-Kraken-Pro-Gaming-Headset-Game-Headphone-Computer-Earphone-Noise-Isolating-Earbuds-With-Mic-BOX/32601753013.html">
+    <p>
+        https://nl.aliexpress.com/item/Magnetische-kabel-nylon-gevlochten-micro-usb-magnectic-kabel-charge-kabel-magneet-snelle-oplaadkabel-voor-xiaomi-samsung/32725055956.html
+    </p>
+    <p>
+        https://nl.aliexpress.com/item/Original-Razer-Kraken-Pro-Gaming-Headset-Game-Headphone-Computer-Earphone-Noise-Isolating-Earbuds-With-Mic-BOX/32601753013.html
+    </p>
+    <p>
+        https://www.aliexpress.com/item/Super-3W-External-Aquarium-Filter-Waterfall-Water-Pumps-2sizes-for-choice-Active-Carbon-Sponge-Board-for/32325415503.html?spm=2114.01010208.3.128.Oss093&ws_ab_test=searchweb0_0,searchweb201602_6_10065_10068_10000032_10000025_10000029_10000028_10060_10062_10056_10055_10054_10059_10099_10000022_10000012_10103_10102_10000015_10096_10000018_10000019_10052_10053_10107_10050_10106_10051_10000009_10084_10083_10080_10082_10081_10110_10111_10112_10113_10114_10115_10037_10033_10032_10000044_10078_10079_10077_10073_429_10000035-10050_10110_10102,searchweb201603_3,afswitch_2,single_sort_1_total_tranpro_desc&btsid=bfa1675d-02b2-4b0e-a128-3677c35324f9
+    </p>
+    <input id="product-url-input" type="text" name="product-url-input" placeholder="Enter an AliExpress product URL" value="https://www.aliexpress.com/item/Super-3W-External-Aquarium-Filter-Waterfall-Water-Pumps-2sizes-for-choice-Active-Carbon-Sponge-Board-for/32325415503.html?spm=2114.01010208.3.128.Oss093&ws_ab_test=searchweb0_0,searchweb201602_6_10065_10068_10000032_10000025_10000029_10000028_10060_10062_10056_10055_10054_10059_10099_10000022_10000012_10103_10102_10000015_10096_10000018_10000019_10052_10053_10107_10050_10106_10051_10000009_10084_10083_10080_10082_10081_10110_10111_10112_10113_10114_10115_10037_10033_10032_10000044_10078_10079_10077_10073_429_10000035-10050_10110_10102,searchweb201603_3,afswitch_2,single_sort_1_total_tranpro_desc&btsid=bfa1675d-02b2-4b0e-a128-3677c35324f9">
 
     <button id="get-product">Get Product</button>
 
@@ -257,6 +271,8 @@
 
         $(document).on("click", ".product-images-remove", removeProductImage);
 
+        $(document).on("click", ".remove-skuProductRow", removeSkuProductRow);
+
         $(document).on("click", ".product-image-select", selectProductImageThumbnail);
 
         function getProduct() {
@@ -289,14 +305,16 @@
                 storeUrl,
                 storeName,
                 productIsAffiliate = false,
-                skuProducts;
+                skuProducts,
+                skuProductsFromUrl,
+                productAttributes = data.results.productAttributes;
 
             if(data.results.URL.success) {
 
                 var $html = $(data.results.URL.product);
 
                 productId = data.results.URL.productId;
-                productTitle = $html.find(".product-name").html();  // TODO: Parse price from string
+                productTitle = $html.find(".product-name").html();
                 productPrice = $html.find(".p-price").html();
                 productUrl = data.results.URL.product.productUrl;
                 storeName = $html.find(".shop-name a").html();
@@ -307,13 +325,35 @@
                     productImages.push($productImages[i].src);
                 }
 
+                var loadedSkuIds = [];
+                skuProducts = [];
+
                 // Get product variations
-                skuProducts = JSON.parse(/var skuProducts=(\[.+\])/.exec(data.results.URL.product)[1]);
-                for(var j=0; j<skuProducts.length; j++) {
-                    skuProducts[j].skuProductImage = $html.find("a[data-sku-id=" + skuProducts[j].skuPropIds + "] img").attr('src');
-                    skuProducts[j].skuProductTitle = $html.find("a[data-sku-id=" + skuProducts[j].skuPropIds + "]").attr('title');
-                    skuProducts[j].skuProductStocks = skuProducts[j].skuVal.availQuantity;
-                    skuProducts[j].skuProductSkus = skuProducts[j].skuPropIds;
+                skuProductsFromUrl = JSON.parse(/var skuProducts=(\[.+\])/.exec(data.results.URL.product)[1]);
+                var skuProductImage;
+                for(var j=0; j<skuProductsFromUrl.length; j++) {
+                    if(skuProductsFromUrl[j].skuPropIds == "") break;
+
+                    var skuId = skuProductsFromUrl[j].skuPropIds.split(",")[0];
+                    if($.inArray(skuId, loadedSkuIds) != -1) {
+                        continue;
+                    }
+                    loadedSkuIds.push(skuId);
+
+                    skuProductsFromUrl[j].skuProductStocks = skuProductsFromUrl[j].skuVal.availQuantity;
+                    skuProductsFromUrl[j].skuProductSkus = productId + '-' + skuId;
+
+                    skuProductsFromUrl[j].skuProductTitle = $html.find("a[data-sku-id=" + skuId + "]").attr('title');
+                    if(typeof skuProductsFromUrl[j].skuProductTitle == "undefined") {
+                        skuProductsFromUrl[j].skuProductTitle = $html.find("a[data-sku-id=" + skuId + "] span").html();
+                    }
+
+                    skuProductImage = $html.find("a[data-sku-id=" + skuId + "] img").attr('src');
+                    if(typeof skuProductImage != "undefined") {
+                        skuProductsFromUrl[j].skuProductImage = skuProductImage;
+                    }
+
+                    skuProducts.push(skuProductsFromUrl[j]);
                 }
 
                 console.log(skuProducts);
@@ -364,7 +404,8 @@
                 storeUrl,
                 storeName,
                 productIsAffiliate,
-                skuProducts
+                skuProducts,
+                productAttributes
             );
         }
 
@@ -393,6 +434,8 @@
             $(".form-product-promotion-url").html("");
             $(".form-product-store-name").html("");
             $(".form-product-store-url").html("");
+
+            $(".sku-product-row").remove();
         }
 
         function displayProduct(
@@ -406,7 +449,8 @@
             storeUrl,
             storeName,
             productIsAffiliate,
-            skuProducts)
+            skuProducts,
+            productAttributes)
         {
             $("#product-id").val(productId);
             $("#product-title").val(productTitle);
@@ -425,7 +469,7 @@
             $(".form-product-store-name").html(storeName);
             $(".form-product-store-url").html(storeUrl);
 
-            var formattedPrice = productPrice.match(/\d+(?:\.\d{1,2})?/g);
+            var formattedPrice = productPrice.match(/\d+(?:\.\d{1,2})?/g)[0];
             $("#product-price").val(formattedPrice);
             $("#product-sale-price").val(formattedPrice);
 
@@ -437,13 +481,28 @@
                 $(".sub-images").append(html);
             }
 
+            console.log("--------------------");
+            console.log(skuProducts);
+
             if(skuProducts.length > 1) {
                 for (var j = 0; j < skuProducts.length; j++) {
-                    var html = '<tr>';
-                    html += '<td><img class="skuProductImage" src="' + skuProducts[j].skuProductImage + '"/><input type="hidden" name="skuProductImages[]" value="' + skuProducts[j].skuProductImage + '"></td>';
-                    html += '<td colspan="2"><input type="text" name="skuProductTitles[]" value="' + skuProducts[j].skuProductTitle + '"/></td>';
+                    var html = '<tr class="sku-product-row sku-product-row-' + j + '">';
+                    html += '<td><span class="remove-skuProductRow" data-index="' + j + '">Remove</span><br/>';
+                    console.log(skuProducts[j]);
+                    if(typeof skuProducts[j].skuProductImage != "undefined") {
+                        html += '<img class="skuProductImage" src="' + skuProducts[j].skuProductImage + '"/>';
+                    }
+                    html += '<input type="hidden" name="skuProductImages[]" value="' + skuProducts[j].skuProductImage + '"></td>';
+                    html += '<td><input type="text" name="skuProductTitles[]" value="' + skuProducts[j].skuProductTitle + '"/></td>';
                     html += '<td><input type="text" name="skuProductPrices[]" value="' + formattedPrice + '"/></td>';
-                    html += '<td>SKU: ' + skuProducts[j].skuPropIds + '<input type="hidden" name="skuProductSkus[]" value="' + skuProducts[j].skuPropIds + '"/></td>';
+
+                    html += '<td><select name="skuProductAttribute[]">';
+                    for(var a = 0; a < productAttributes.length; a++) {
+                        html += '<option value="attribute_pa_' + productAttributes[a].attribute_name + '">' + productAttributes[a].attribute_label + '</option>';
+                    }
+                    html += '</select></td>';
+
+                    html += '<td>SKU: ' + skuProducts[j].skuProductSkus + '<input type="hidden" name="skuProductSkus[]" value="' + skuProducts[j].skuProductSkus + '"/></td>';
                     html += '<td>Stock: ' + skuProducts[j].skuVal.availQuantity + '<input type="hidden" name="skuProductStocks[]" value="' + skuProducts[j].skuVal.availQuantity + '"/></td>';
                     html += '</tr>';
                     $("#product-form-tbody").append(html);
@@ -458,6 +517,12 @@
             $(".product-image-select").removeClass("product-image-selected");
             $(this).addClass("product-image-selected");
             $("#product-thumbnail-index").val(index);
+        }
+
+        function removeSkuProductRow() {
+            var index = $(this).data('index');
+
+            $(".sku-product-row-" + index).remove();
         }
 
         function removeProductImage() {
