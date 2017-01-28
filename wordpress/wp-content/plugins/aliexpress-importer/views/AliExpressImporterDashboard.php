@@ -118,6 +118,11 @@
     .importer table tr td.product-title-col {
         min-width: 300px;
     }
+    .importer table tr td select {
+        width: 100%;
+        height: 41px;
+        display: block;
+    }
     .importer table tr td.product-price-col {
         width: 100px;
     }
@@ -214,7 +219,7 @@
                     </td>
                     <td class="product-tags-col">
                         <div class="form-section">
-                            <input id="product-tags" name="product-tags" type="text" placeholder="tags">
+                            <textarea id="product-tags" rows="4" name="product-tags" placeholder="tags"></textarea>
                         </div>
                     </td>
                     <td class="product-active-col">
@@ -275,6 +280,12 @@
 
         $(document).on("click", ".product-image-select", selectProductImageThumbnail);
 
+        $(document).on("keyup", ".variation-combination-title", setProductTitleForVariation);
+
+        $(document).on("change", ".variation-combination-attribute", setProductAttributeForVariation);
+
+        var hasCombinations = false;
+
         function getProduct() {
             clearForm();
 
@@ -306,7 +317,6 @@
                 storeName,
                 productIsAffiliate = false,
                 skuProducts,
-                skuProductsFromUrl,
                 productAttributes = data.results.productAttributes;
 
             if(data.results.URL.success) {
@@ -316,7 +326,7 @@
                 productId = data.results.URL.productId;
                 productTitle = $html.find(".product-name").html();
                 productPrice = $html.find(".p-price").html();
-                productUrl = data.results.URL.product.productUrl;
+                productUrl = data.results.URL.productUrl.split("?")[0];
                 storeName = $html.find(".shop-name a").html();
                 storeUrl = $html.find(".shop-name a").attr('href');
 
@@ -325,37 +335,8 @@
                     productImages.push($productImages[i].src);
                 }
 
-                var loadedSkuIds = [];
-                skuProducts = [];
-
                 // Get product variations
-                skuProductsFromUrl = JSON.parse(/var skuProducts=(\[.+\])/.exec(data.results.URL.product)[1]);
-                var skuProductImage;
-                for(var j=0; j<skuProductsFromUrl.length; j++) {
-                    if(skuProductsFromUrl[j].skuPropIds == "") break;
-
-                    // TODO: Import product variation combination
-                    var skuId = skuProductsFromUrl[j].skuPropIds.split(",")[0];
-                    if($.inArray(skuId, loadedSkuIds) != -1) {
-                        continue;
-                    }
-                    loadedSkuIds.push(skuId);
-
-                    skuProductsFromUrl[j].skuProductStocks = skuProductsFromUrl[j].skuVal.availQuantity;
-                    skuProductsFromUrl[j].skuProductSkus = productId + '-' + skuId;
-
-                    skuProductsFromUrl[j].skuProductTitle = $html.find("a[data-sku-id=" + skuId + "]").attr('title');
-                    if(typeof skuProductsFromUrl[j].skuProductTitle == "undefined") {
-                        skuProductsFromUrl[j].skuProductTitle = $html.find("a[data-sku-id=" + skuId + "] span").html();
-                    }
-
-                    skuProductImage = $html.find("a[data-sku-id=" + skuId + "] img").attr('src');
-                    if(typeof skuProductImage != "undefined") {
-                        skuProductsFromUrl[j].skuProductImage = skuProductImage;
-                    }
-
-                    skuProducts.push(skuProductsFromUrl[j]);
-                }
+                skuProducts = GetProductVariations(data.results.URL.product, $html);
 
                 console.log(skuProducts);
             }
@@ -408,6 +389,41 @@
                 skuProducts,
                 productAttributes
             );
+        }
+
+        function GetProductVariations(productFromUrl, $html) {
+            var skuProducts = [];
+
+            var skuProductsFromUrl = JSON.parse(/var skuProducts=(\[.+\])/.exec(productFromUrl)[1]);
+            for(var j=0; j<skuProductsFromUrl.length; j++) {
+                if(skuProductsFromUrl[j].skuPropIds == "") break;
+
+                var skuIds = skuProductsFromUrl[j].skuPropIds.split(",");
+
+                var skuProduct = {
+                    skuProductSkus: skuProductsFromUrl[j].skuPropIds.replace(/,/g, '-'),
+                    skuProductStocks: skuProductsFromUrl[j].skuVal.availQuantity,
+                    combinations: []
+                };
+
+                hasCombinations = skuIds.length > 1;
+
+                for(var i=0; i<skuIds.length; i++) {
+                    var title = $html.find("a[data-sku-id=" + skuIds[i] + "]").attr('title');
+                    if(typeof title == "undefined") {
+                        title = $html.find("a[data-sku-id=" + skuIds[i] + "] span").html();
+                    }
+
+                    skuProduct.combinations.push({
+                        skuId: skuIds[i],
+                        title: title
+                    });
+                }
+
+                skuProducts.push(skuProduct);
+            }
+
+            return skuProducts;
         }
 
         function clearForm() {
@@ -482,9 +498,6 @@
                 $(".sub-images").append(html);
             }
 
-            console.log("--------------------");
-            console.log(skuProducts);
-
             if(skuProducts.length > 1) {
                 for (var j = 0; j < skuProducts.length; j++) {
                     var html = '<tr class="sku-product-row sku-product-row-' + j + '">';
@@ -494,17 +507,27 @@
                         html += '<img class="skuProductImage" src="' + skuProducts[j].skuProductImage + '"/>';
                     }
                     html += '<input type="hidden" name="skuProductImages[]" value="' + skuProducts[j].skuProductImage + '"></td>';
-                    html += '<td><input type="text" name="skuProductTitles[]" value="' + skuProducts[j].skuProductTitle + '"/></td>';
+
+                    html += '<td>';
+                    for(var a = 0; a < skuProducts[j].combinations.length; a++) {
+                        html += '<input data-skuId="' + skuProducts[j].combinations[a].skuId + '" class="variation-combination-title" type="text" name="skuProductTitles[' + skuProducts[j].skuProductSkus + '][]" value="' + skuProducts[j].combinations[a].title + '"/>';
+                    }
+                    html += '</td>';
+
+                    html += '<td>';
+                    for(var b = 0; b < skuProducts[j].combinations.length; b++) {
+                        html += '<select data-skuId="' + skuProducts[j].combinations[b].skuId + '" class="variation-combination-attribute" name="skuProductAttributes[' + skuProducts[j].skuProductSkus + '][]">';
+                        for(var c = 0; c < productAttributes.length; c++) {
+                            html += '<option value="pa_' + productAttributes[c].attribute_name + '">' + productAttributes[c].attribute_label + '</option>';
+                        }
+                        html += '</select>';
+                    }
+                    html += '</td>';
+
                     html += '<td><input type="text" name="skuProductPrices[]" value="' + formattedPrice + '"/></td>';
 
-                    html += '<td><select name="skuProductAttribute[]">';
-                    for(var a = 0; a < productAttributes.length; a++) {
-                        html += '<option value="attribute_pa_' + productAttributes[a].attribute_name + '">' + productAttributes[a].attribute_label + '</option>';
-                    }
-                    html += '</select></td>';
-
                     html += '<td>SKU: ' + skuProducts[j].skuProductSkus + '<input type="hidden" name="skuProductSkus[]" value="' + skuProducts[j].skuProductSkus + '"/></td>';
-                    html += '<td>Stock: ' + skuProducts[j].skuVal.availQuantity + '<input type="hidden" name="skuProductStocks[]" value="' + skuProducts[j].skuVal.availQuantity + '"/></td>';
+                    html += '<td>Stock: ' + skuProducts[j].skuProductStocks + '<input type="hidden" name="skuProductStocks[]" value="' + skuProducts[j].skuProductStocks + '"/></td>';
                     html += '</tr>';
                     $("#product-form-tbody").append(html);
                 }
@@ -528,6 +551,26 @@
 
         function removeProductImage() {
             $(this).parent(".product-images-container").remove();
+        }
+
+        function setProductTitleForVariation() {
+            var $this = $(this),
+                skuId = $this.data('skuid'),
+                value = $this.val();
+
+            $('.variation-combination-title[data-skuid=' + skuId + ']').val(value);
+        }
+
+        function setProductAttributeForVariation() {
+            var $this = $(this),
+                skuId = $this.data('skuid'),
+                value = $this.val();
+
+            if(hasCombinations) {
+                $('.variation-combination-attribute[data-skuid=' + skuId + ']').val(value);
+            } else {
+                $('.variation-combination-attribute').val(value);
+            }
         }
 
     })(jQuery);

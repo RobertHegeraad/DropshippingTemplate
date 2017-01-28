@@ -128,55 +128,81 @@ class AliExpressImporter {
             );
         }
 
-        // TODO: Dynamically add other attributes
+        $set_object_terms = [];
+        if($product['skuProductAttributes'] != null)
+        foreach($product['skuProductAttributes'] as $skuIds => $attributes) {
+            $titles = $product['skuProductTitles'][$skuIds];
 
-        wp_set_object_terms($post_id, $product['skuProductTitles'], 'pa_color');
+            for($i=0; $i<count($attributes); $i++) {
+                // Create a new array of terms for every attribute
+                $set_object_terms[$attributes[$i]][] = $titles[$i];
+            }
+        }
 
-        $product_attributes['pa_color'] = array(
-            'name'=> 'pa_color',
-            'value'=> '',
-            'is_visible' => '1',
-            'is_variation' => '1',
-            'is_taxonomy' => '1'
-        );
+        foreach($set_object_terms as $attribute => $terms) {
+            wp_set_object_terms($post_id, $terms, $attribute);  // Add available terms for the the attribute to the product
 
-//        wp_set_object_terms($post_id, array('small', 'medium', 'big'), 'pa_size');
-//
-//        $product_attributes['pa_size'] = array(
-//            'name'=> 'pa_size',
-//            'value'=> '',
-//            'is_visible' => '1',
-//            'is_variation' => '1',
-//            'is_taxonomy' => '1'
-//        );
+            // Add the attribute to the product
+            $product_attributes[$attribute] = array(
+                'name'=> $attribute,
+                'value'=> '',
+                'is_visible' => '1',
+                'is_variation' => '1',
+                'is_taxonomy' => '1'
+            );
+        }
 
         update_post_meta($post_id, '_product_attributes', $product_attributes);
     }
 
     private function ImportProductVariations($post_id, $product) {
 
+        $skuProductTitles = array();
+        if($product['skuProductAttributes'] != null)
+        foreach($product['skuProductTitles'] as $productTitles) {
+            $skuProductTitles[] = $productTitles;
+        }
+
+        $skuProductAttributes = array();
+        if($product['skuProductAttributes'] != null)
+        foreach($product['skuProductAttributes'] as $productAttributes) {
+            $skuProductAttributes[] = $productAttributes;
+        }
+
         for($i=0; $i<count($product['skuProductTitles']); $i++) {
-
-            $variation_id = wp_insert_post(array(
-                'post_author' => get_current_user_id(),
-                'post_status' => "publish",
-                'post_name' => '',
-                'post_title' => '',
-                'post_parent' => $post_id,
-                'post_type' => "product_variation",
+            $this->ImportProductVariation($post_id, $product, array(
+                "skuIds" => $product['skuProductSkus'][$i],
+                "price" => $product['skuProductPrices'][$i],
+                "stock" => $product['skuProductStocks'][$i],
+                "titles" => $skuProductTitles[$i],
+                "attributes" => $skuProductAttributes[$i],
+                "image" => $product['skuProductImages'][$i]
             ));
+        }
+    }
 
-            update_post_meta($variation_id, '_manage_stock', "yes");
-            update_post_meta($variation_id, $product['skuProductAttribute'][$i], $string = preg_replace("/[\s_]/", "-", strtolower($product['skuProductTitles'][$i]))); // Convert title to slug
-//            update_post_meta($variation_id, "attribute_pa_size", "big");
-            update_post_meta($variation_id, '_price', $product['skuProductPrices'][$i]);
-            update_post_meta($variation_id, '_regular_price', $product['skuProductPrices'][$i]);
-            update_post_meta($variation_id, '_sku', $product['skuProductSkus'][$i]);
-            wc_update_product_stock($variation_id, $product['skuProductStocks'][$i]);
+    private function ImportProductVariation($post_id, $product, $variation) {
+        $variation_id = wp_insert_post(array(
+            'post_author' => get_current_user_id(),
+            'post_status' => "publish",
+            'post_name' => '',
+            'post_title' => '',
+            'post_parent' => $post_id,
+            'post_type' => "product_variation",
+        ));
 
-            if($product['skuProductImages'][$i] != "undefined") {
-                $this->aliExpressImage->UploadProductThumbnail($product['skuProductImages'][$i], $variation_id, $product['product-title']);
-            }
+        update_post_meta($variation_id, '_manage_stock', "yes");
+        update_post_meta($variation_id, '_price', $variation['price']);
+        update_post_meta($variation_id, '_regular_price', $variation['price']);
+        update_post_meta($variation_id, '_sku', $variation['skuIds']);
+        wc_update_product_stock($variation_id, $variation['stock']);
+        for($i=0; $i<count($variation['titles']); $i++) {
+            $slug = preg_replace("/[\s_]/", "-", strtolower($variation['titles'][$i])); // Convert title to slug
+            update_post_meta($variation_id, "attribute_" . $variation['attributes'][$i], $slug);
+        }
+
+        if($variation['image'] != "undefined") {
+            $this->aliExpressImage->UploadProductThumbnail($variation['image'], $variation_id, $product['product-title']);
         }
     }
 
