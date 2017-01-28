@@ -55,21 +55,25 @@
             for(var i=0; i<data.results.length; i++) {
                 var product = data.results[i];
 
+                console.log(i);
+                console.log(product);
                 if(product.product_html.success) {
                     var stock = /window\.runParams\.totalAvailQuantity=([0-9]+);/.exec(product.product_html.product);
 
                     var variations = [];
                     var skuProducts = JSON.parse(/var skuProducts=(\[.+\])/.exec(product.product_html.product)[1]);
+                    if(skuProducts.length > 1)
                     for(var j=0; j<skuProducts.length; j++) {
                         skuProducts[j].skuProductStocks = skuProducts[j].skuVal.availQuantity;
-                        skuProducts[j].skuProductSkus = skuProducts[j].skuPropIds;
+                        skuProducts[j].skuProductSkus = skuProducts[j].skuPropIds.replace(/,/g, '-');
 
                         variations.push({
-                            "variation_id": product.variations[skuProducts[j].skuPropIds],
+                            "variation_id": product.variations[skuProducts[j].skuProductSkus],
                             "stock": skuProducts[j].skuVal.availQuantity
                         });
                     }
 
+                    console.log(skuProducts);
                     console.log(variations);
 
                     UpdateStockForProduct(product.ID, stock[1], product.product_url, variations);
@@ -105,10 +109,11 @@
 
                     var stockError = data.results.product.product_stock < 50 ? "orange" : "black";
 
-                    var html = '<li>';ni
+                    var html = '<li>';
                     html += 'Product ' + product_id;
                     html += ' total stock updated to <strong style="color: ' + stockError + '">' + data.results.product.product_stock + '</strong><br/>';
 
+                    if(data.results.product.variations)
                     for(var i=0; i<data.results.product.variations.length; i++) {
                         var variation = data.results.product.variations[i];
                         var variationStockError = variation.stock < 50 ? "orange" : "black";
