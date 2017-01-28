@@ -1,78 +1,27 @@
-body {
-	font-family: calibri;
-	background: #ffffff;
-}
-
-#date-time {
-	padding-top: 100px;
-	font-size: 80px;
-	margin: 0 auto;
-	text-align: center;
-	color: white;
-	text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
-	position: relative;
-}
-
-#weather {
-	margin-right: -20px;
-	position: relative;
-	top: -20px;
-	left: -20px;
-}
-
-#search {
-	width: 60%;
-	margin: 0 auto;
-	margin-top: 100px;
-	padding: 10px 12px;
-	display: block;
-	border-radius: 4px;
-	border: 1px solid;
-	border-color: #e5e6e9 #dfe0e4 #d0d1d5;
-}
-#search:focus {
-	outline: none;
-}
-
-.tabs {
-	width: 80%;
-	margin: 0 auto;
-	list-style: none;
-	margin-top: 40px;
+#ali-header {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	padding: 2px;
+	background: rgba(255, 153, 0, 0.7);
+	z-index: 100000;
 	overflow: hidden;
 }
-	.tab {
-		width: 150px;
-		height: 80px;
-		float: left;
-		margin: 20px;
-		/*border: 1px solid transparent;*/
-		text-align: center;
-		position: relative;
-		/*border-radius: 50%;*/
-	}
-	/*.tab:hover {
-		background: white;
-		border: 1px solid;
-		border-color: #e5e6e9 #dfe0e4 #d0d1d5;
-		box-shadow: 1px 1px 10px rgba(0,0,0,0.1);
-	}*/
-	.tab:hover .text {
-		color: #555555;
-	}
-		.tab a {
-			display: block;
-			text-decoration: none;
-		}
-		.tab .icon {
-			width: 100%;
-			height: 60px;
-			background-size: contain;
-		    background-position: center;
-		    background-repeat: no-repeat;
-		}
-		.tab .text {
-			margin-top: 10px;
-			text-align: center;
-			color: #aaaaaa;
-		}
+
+.ali-button {
+	float: right;
+	border: 0;
+	background-color: #f9f9f9;
+	color: #333333;
+	border-radius: 2px;
+	font-size: 8px;
+	padding: 2px 4px;
+	margin-left: 4px;
+}
+
+#ali-message {
+	float: left;
+	font-size: 8px;
+	color: white;
+}

@@ -11,22 +11,39 @@
 // Tel:  
 // Mobile
 
-$(document).on('keyup', function(e) {
-	if(e.keyCode == 67) {
-		SetShippingAddress();		
-	}
+$(document).on('ready', function(e) {
+	var html = '<div id="ali-header">';
+	html += '<button id="ali-paste-button" class="ali-button">Paste address</button>';
+	html += '<button id="ali-copy-button" class="ali-button">Copy address</button>';
+	html += '<div id="ali-message"></div>';
+	html += '</div>';
 
-	if(e.keyCode == 86) {
-		chrome.storage.local.get('shipping_address', GetShippingAddress);
-	}
+	$("body").append(html);
 });
 
+$(document).on('mousedown', "#ali-copy-button", function(e) {
+	SetShippingAddress();
+});
+
+$(document).on('mousedown', "#ali-paste-button", function(e) {
+	chrome.storage.local.get('shipping_address', GetShippingAddress);
+});
+
+// $(document).on('keyup', function(e) {
+// 	if(e.keyCode == 67) {
+// 		SetShippingAddress();
+// 	}
+
+// 	if(e.keyCode == 86) {
+// 		chrome.storage.local.get('shipping_address', GetShippingAddress);
+// 	}
+// });
+
 function GetShippingAddress(result) {
-	alert("Getting address...");
 	if(typeof result.shipping_address !== 'undefined') {
 		var data = JSON.parse(result.shipping_address);
-		alert(result.shipping_address);
-		console.log(data);
+		
+		$("#ali-message").html("Filling in address...");
 
 		$("input[name='contactPerson']").val(data.name);
 		$("input[name='address']").val(data.address);
@@ -38,10 +55,13 @@ function GetShippingAddress(result) {
 		$("input[name='phoneArea']").val(data.phoneArea);
 		$("input[name='phoneNumber']").val(data.phoneNumber);
 		$("input[name='mobileNo']").val(data.mobileNo);
+		$("textarea.message-text").val(data.excerpt);
 
   		chrome.storage.local.clear(ClearShippingAddress);
+
+  		$("#ali-message").html("Done");
 	} else {
-		alert("Not set");
+  		$("#ali-message").html("Address not found, did you copy it from your website?");
 	}
 }
 
@@ -49,6 +69,8 @@ function SetShippingAddress() {
 	if(!$("#order_data").length) {
 		return;
 	}
+
+	$("#ali-message").html("Copying address...");
 
 	var contactFirstName = $("#_shipping_first_name").val(),
 		contactLastName = $("#_shipping_last_name").val(),
@@ -79,15 +101,15 @@ function SetShippingAddress() {
 		"mobileNo": mobile
 	};
 
-	var json = JSON.stringify(data);
+	console.log(data);
 
-	alert(json);
+	var json = JSON.stringify(data);
 
 	chrome.storage.local.set({'shipping_address': json}, SetShippingAddressSuccess);
 }
 
 function SetShippingAddressSuccess() {
-  alert("Set value: " + json);
+  $("#ali-message").html("Done");
   console.log(data);
 }
 
