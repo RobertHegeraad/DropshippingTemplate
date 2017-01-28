@@ -6,12 +6,26 @@
 	<meta charset="<?php bloginfo( 'charset' ); ?>" />
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 
+	<meta name="author" content="Pro Gamer Store" />
+	<meta name="contact" content="support@progamerstore.nl" />
+	<meta name="copyright" content="Copyright (c)2017 Pro Gamer Store" />
+	<meta name="description" content="Pro Gamer Store offers the best gaming gear to become a better gamer" />
+	<meta name="keywords" content="pro, gamer, game, gaming, store, shop, headset, keyboard, mouse, controller, gamingheadset, gamingkeyboard, gamingmouse, gamingcontroller" />
+<!--	<meta property="og:locale" content="en_US">-->
+<!--	<meta property="og:type" content="website">-->
+<!--	<meta property="og:title" content="Pro Gamer Store">-->
+<!--	<meta property="og:description" content="Get the best gaming gear">-->
+<!--	<meta property="og:url" content="https://www.progamerstore.com/">-->
+<!--	<meta property="og:site_name" content="Pro Gamer Store">-->
+<!--	<meta property="og:image" content="--><?php //echo get_stylesheet_directory_uri(); ?><!--/images/product_single.png">-->
+
 	<link rel="profile" href="http://gmpg.org/xfn/11" />
 	<link rel="pingback" href="<?php bloginfo( 'pingback_url' ); ?>" />
 
 	<?php wp_head(); ?>
 
 	<link rel="stylesheet" href="<?php echo get_template_directory_uri() . '/restyle.css'; ?>" />
+	<link rel="shortcut icon" href="<?php echo get_stylesheet_directory_uri(); ?>/assets/img/pgs-favicon.ico" />
 </head>
 
 <body <?php body_class(); // Body classes is added from inc/helpers-frontend.php ?>>

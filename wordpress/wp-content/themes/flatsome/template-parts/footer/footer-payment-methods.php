@@ -8,7 +8,7 @@
                 <li class="payment-method-mastercard"></li>
                 <li class="payment-method-american-express"></li>
                 <li class="payment-method-paypal"></li>
-                <li class="payment-method-google-wallet"></li>
+                <li class="payment-method-ideal"></li>
             </ul>
         </div>
 

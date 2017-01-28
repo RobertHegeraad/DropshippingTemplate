@@ -1,5 +1,35 @@
+@font-face {
+    font-family: 'FontAwesome';
+    src: url("fonts/fontawesome/fontawesome-webfont.eot?v=#4.1.0");
+    src: url("fonts/fontawesome/fontawesome-webfont.eot?#iefix&v=#4.1.0") format("embedded-opentype"), url("fonts/fontawesome/fontawesome-webfont.woff2?v=#4.1.0") format("woff2"), url("fonts/fontawesome/fontawesome-webfont.woff?v=#4.1.0") format("woff"), url("fonts/fontawesome/fontawesome-webfont.ttf?v=#4.1.0") format("truetype"), url("fonts/fontawesome/fontawesome-webfont.svg?v=#4.1.0#fontawesomeregular") format("svg");
+    font-weight: normal;
+    font-style: normal;
+}
+
 .container.section-title-container {
     margin-top: 20px;
+}
+
+.menu-footer-container {
+    float: left;
+}
+.copyright-footer {
+    float: right;
+}
+
+.absolute-footer {
+    padding-bottom: 10px;
+}
+
+.absolute-footer ul {
+    border-bottom: 0;
+    padding-bottom: 0;
+}
+
+.absolute-footer ul li a {
+    display: inline-block;
+    padding-bottom: 2px;
+    border-bottom: 1px dotted #cccccc;
 }
 
 /* HEADER ---------------------------------------------------------------------------------------------------------------------------- */
@@ -67,6 +97,33 @@
 #billing_phonenumber_field abbr {
     display: none;
 }
+
+/* CHECKMARKS ---------------------------------------------------------------------------------------------------------------------------- */
+
+#checkmarks-list {
+    width: 100%;
+    margin: 0;
+    padding: 20px 0;
+    list-style: none;
+    text-align: center;
+    border-top: 1px solid #dbdbdb;
+}
+
+#checkmarks-list li {
+    display: inline-block;
+    margin: 0 25px;
+    position: relative;
+}
+
+#checkmarks-list li:before {
+    /*color: #00a0d2;*/
+    color: #68afc0;
+    content: "\f00c";
+    font-family: FontAwesome;
+    position: absolute;
+    left: -22px;
+}
+
 
 /* PAYMENT METHODS ---------------------------------------------------------------------------------------------------------------------------- */
 
@@ -190,4 +247,77 @@
 }
 #payment-methods .delivery-method-dhl {
     background-position: -421px -88px;
+}
+
+
+/* FACEBOOK -------------------------------------------------------------------------------------------------------------------------------- */
+
+#u_0_6 {
+    display: none;
+}
+
+._2lqg {
+    display: none;
+}
+
+/* COLORS -------------------------------------------------------------------------------------------------------------------------------- */
+
+.grid-tools a.quick-view {
+    background-color: #68afc0;
+}
+
+.tagcloud a:hover {
+    background-color: #68afc0;
+    border-color: #68afc0;
+}
+
+#top-bar.header-top {
+    background-color: #68afc0;
+}
+#top-bar.header-top .menu-item a {
+    color: #ffffff;
+}
+
+.support-link {
+    color: #ffffff !important;
+}
+
+.current-dropdown .cart-icon strong, .cart-icon:hover strong {
+    background-color: #68afc0;
+    color: #ffffff;
+}
+.cart-icon strong {
+    color: #68afc0;
+}
+
+.cart-icon strong, .cart-icon strong:after {
+    border-color: #68afc0;
+}
+
+.nav-line-bottom>li>a:before, .nav-line-grow>li>a:before, .nav-line>li>a:before {
+    background-color: #68afc0;
+}
+
+.button, input[type='submit'], input[type='submit'].button, input[type='reset'].button, input[type='button'].button {
+    background-color: #68afc0;
+    border-radius: 4px;
+}
+
+.primary.is-underline, .primary.is-link, .primary.is-outline {
+    color: #68afc0;
+    border-color: #68afc0;
+}
+.is-outline:hover, .primary.is-outline:hover {
+    background-color: #68afc0;
+    border-color: #68afc0;
+}
+
+.button.plus.is-form, .button.minus.is-form {
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+form[name=checkout] .has-border {
+    border: 0;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.4);
 }

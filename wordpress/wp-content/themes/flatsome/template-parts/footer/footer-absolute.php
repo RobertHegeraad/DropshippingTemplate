@@ -26,7 +26,7 @@ $flatsome_footer_right_text = trim( get_theme_mod( 'footer_right_text' ) );
       </div><!-- -right -->
     <?php endif; ?>
 
-    <div class="footer-primary pull-left">
+    <div class="footer-primary">
       <?php if ( has_nav_menu( 'footer' ) ) : ?>
         <?php
         wp_nav_menu( array(
@@ -34,11 +34,15 @@ $flatsome_footer_right_text = trim( get_theme_mod( 'footer_right_text' ) );
           'menu_class' => 'links footer-nav uppercase',
           'depth' => 1,
           'fallback_cb' => false,
+          'items_wrap' => footer_menu_wrap()
         ) );
         ?>
+<!--        <ul id="menu-footer" class="links footer-nav uppercase">-->
+<!--          <li id="menu-item-883" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-883"><a href="http://localhost/projects/Dropshipping/wordpress/elements/pages/return-policy/">Return Policy</a></li>-->
+<!--        </ul>-->
       <?php endif; ?>
       <div class="copyright-footer">
-        <?php echo do_shortcode( get_theme_mod( 'footer_left_text', 'Copyright [ux_current_year] &copy; <strong>UX Themes</strong>' ) ); ?>
+        Copyright 2017 &copy; Pro Gamer Store
       </div>
       <?php do_action( 'flatsome_absolute_footer_primary' ); ?>
     </div><!-- .left -->

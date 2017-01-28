@@ -54,13 +54,40 @@ function footer_menu_wrap() {
     // get nav items as configured in /wp-admin/
     $wrap .= '%3$s';
 
-    $wrap .= '<li><a href="#">Terms & Conditions</a></li>';
-    $wrap .= '<li><a href="#">Privacy Policy</a></li>';
+    $wrap .= '<li><a href="' . get_home_url() . '/terms/TERMS_OF_SERVICE.pdf">Terms of service</a></li>';
+    $wrap .= '<li><a href="' . get_home_url() . '/terms/RETURN_POLICY.pdf">Return policy</a></li>';
+    $wrap .= '<li><a href="' . get_home_url() . '/terms/PRIVACY_STATEMENT.pdf">Privacy Policy</a></li>';
 
     $wrap .= '</ul>';
 
     return $wrap;
 }
+
+/* Product Page SKU ----------------------------------------------------------- */
+
+function remove_product_page_skus( $enabled ) {
+    if ( ! is_admin() && is_product() ) {
+        return false;
+    }
+
+    return $enabled;
+}
+add_filter( 'wc_product_sku_enabled', 'remove_product_page_skus' );
+
+/* Image Alt text ----------------------------------------------------------- */
+
+function add_img_title( $attr, $attachment = null ) {
+
+    $img_title = trim( strip_tags( $attachment->post_title ) );
+
+    $attr['title'] = $img_title;
+    $attr['alt'] = $img_title;
+
+    return $attr;
+}
+add_filter( 'wp_get_attachment_image_attributes','add_img_title', 10, 2 );
+
+add_filter( 'woocommerce_formatted_address_force_country_display', '__return_true' );
 
 /* Exchange rates ----------------------------------------------------------- */
 
