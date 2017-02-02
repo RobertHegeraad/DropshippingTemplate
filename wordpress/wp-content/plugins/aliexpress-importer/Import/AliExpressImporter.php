@@ -76,6 +76,9 @@ class AliExpressImporter {
     }
 
     private function ImportImages($post_id, $product) {
+        if(!isset($product['product-images'][$product['product-thumbnail-index']])) {
+            $product['product-thumbnail-index'] = 0;
+        }
         $this->aliExpressImage->UploadProductThumbnail($product['product-images'][$product['product-thumbnail-index']], $post_id, $product['product-title']);
         unset($product['product-images'][$product['product-thumbnail-index']]);
         $this->aliExpressImage->UploadProductGallery($product['product-images'], $post_id, $product['product-title']);
