@@ -104,7 +104,10 @@ class AliExpressImporter {
 
     private function ImportPrice($post_id, $product) {
         update_post_meta( $post_id, '_regular_price', $product['product-price'] );
-        update_post_meta( $post_id, '_sale_price', ($product['product-sale-price'] == "") ? $product['product-price'] : $product['product-sale-price'] );
+        if($product['product-sale-price'] != "") {
+            update_post_meta( $post_id, '_sale_price', $product['product-sale-price']);
+            update_post_meta( $post_id, '_price', $product['product-sale-price']);
+        }
     }
 
     private function ImportProductAttributes($post_id, $product) {
@@ -196,9 +199,11 @@ class AliExpressImporter {
         ));
 
         update_post_meta($variation_id, '_manage_stock', "yes");
-        update_post_meta($variation_id, '_price', $variation['price']);
         update_post_meta($variation_id, '_regular_price', $variation['price']);
-        update_post_meta($variation_id, '_sale_price', ($variation['salePrice'] == "") ? $variation['price'] : $variation['salePrice'] );
+        if ($variation['salePrice'] != "") {
+            update_post_meta($variation_id, '_price', $variation['salePrice']);
+            update_post_meta($variation_id, '_sale_price', $variation['salePrice']);
+        }
         update_post_meta($variation_id, '_sku', $variation['skuIds']);
         wc_update_product_stock($variation_id, $variation['stock']);
         for($i=0; $i<count($variation['titles']); $i++) {
@@ -226,7 +231,6 @@ class AliExpressImporter {
         update_post_meta( $post_id, '_sku', "");
         update_post_meta( $post_id, '_sale_price_dates_from', "" );
         update_post_meta( $post_id, '_sale_price_dates_to', "" );
-        update_post_meta( $post_id, '_price', $product['product-price'] );
         update_post_meta( $post_id, '_sold_individually', "" );
         update_post_meta( $post_id, '_manage_stock', "yes" );
         update_post_meta( $post_id, '_backorders', "no" );

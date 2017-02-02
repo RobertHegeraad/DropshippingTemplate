@@ -213,7 +213,7 @@
                     <td>
                         <div class="form-section">
                             <?php foreach(get_categories(array('taxonomy' => 'product_cat', 'hide_empty' => 0)) as $category): ?>
-                                <label for="<?= $category->term_id ?>"><input type="checkbox" class="product-category" name="product-categories[]" id="<?= $category->term_id ?>" value="<?= $category->term_id ?>"/><?= $category->name ?></label>
+                                <label for="<?= $category->term_id ?>"><input type="checkbox" class="product-category" name="product-categories[]" id="<?= $category->term_id ?>" value="<?= $category->term_id ?>"/><?= $category->slug ?></label>
                             <?php endforeach; ?>
                         </div>
                     </td>
