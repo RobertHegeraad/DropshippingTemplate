@@ -524,7 +524,10 @@
                     }
                     html += '</td>';
 
-                    html += '<td><input type="text" name="skuProductPrices[]" value="' + formattedPrice + '"/></td>';
+                    html += '<td>';
+                    html += '<input type="text" name="skuProductPrices[]" value="' + formattedPrice + '" placeholder="Price"/>';
+                    html += '<input type="text" name="skuProductSalePrices[]" value="' + formattedPrice + '" placeholder="Sale price"/>';
+                    html += '</td>';
 
                     html += '<td>SKU: ' + skuProducts[j].skuProductSkus + '<input type="hidden" name="skuProductSkus[]" value="' + skuProducts[j].skuProductSkus + '"/></td>';
                     html += '<td>Stock: ' + skuProducts[j].skuProductStocks + '<input type="hidden" name="skuProductStocks[]" value="' + skuProducts[j].skuProductStocks + '"/></td>';

@@ -173,6 +173,7 @@ class AliExpressImporter {
             $this->ImportProductVariation($post_id, $product, array(
                 "skuIds" => $product['skuProductSkus'][$i],
                 "price" => $product['skuProductPrices'][$i],
+                "salePrice" => $product['skuProductSalePrices'][$i],
                 "stock" => $product['skuProductStocks'][$i],
                 "titles" => $skuProductTitles[$i],
                 "attributes" => $skuProductAttributes[$i],
@@ -194,6 +195,7 @@ class AliExpressImporter {
         update_post_meta($variation_id, '_manage_stock', "yes");
         update_post_meta($variation_id, '_price', $variation['price']);
         update_post_meta($variation_id, '_regular_price', $variation['price']);
+        update_post_meta($variation_id, '_sale_price', ($variation['salePrice'] == "") ? $variation['price'] : $variation['salePrice'] );
         update_post_meta($variation_id, '_sku', $variation['skuIds']);
         wc_update_product_stock($variation_id, $variation['stock']);
         for($i=0; $i<count($variation['titles']); $i++) {
