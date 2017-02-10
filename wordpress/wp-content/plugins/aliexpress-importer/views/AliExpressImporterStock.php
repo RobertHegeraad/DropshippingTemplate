@@ -70,10 +70,12 @@
                         skuProducts[j].skuProductStocks = skuProducts[j].skuVal.availQuantity;
                         skuProducts[j].skuProductSkus = skuProducts[j].skuPropIds.replace(/,/g, '-');
 
-                        variations.push({
-                            "variation_id": product.variations[skuProducts[j].skuProductSkus],
-                            "stock": skuProducts[j].skuVal.availQuantity
-                        });
+                        if(typeof product.variations[skuProducts[j].skuProductSkus] != "undefined") {
+                            variations.push({
+                                "variation_id": product.variations[skuProducts[j].skuProductSkus],
+                                "stock": skuProducts[j].skuVal.availQuantity
+                            });
+                        }
                     }
 
                     if(productIsUnavailable) {
