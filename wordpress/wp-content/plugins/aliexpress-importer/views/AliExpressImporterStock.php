@@ -58,6 +58,9 @@
                 console.log(i);
                 console.log(product);
                 if(product.product_html.success) {
+                    var offline = product.product_html.product.match(/window\.runParams\.offline\=true/g);
+                    var productIsUnavailable = offline != null && offline.length >= 1;
+
                     var stock = /window\.runParams\.totalAvailQuantity=([0-9]+);/.exec(product.product_html.product);
 
                     var variations = [];
@@ -72,6 +75,15 @@
                             "stock": skuProducts[j].skuVal.availQuantity
                         });
                     }
+
+                    if(productIsUnavailable) {
+                        ProductIsUnavailable(product.ID, product.product_url);
+                        stock[1] = 0;
+                        for(var v=0; v<variations.length; v++) {
+                            variations[v].stock = 0;
+                        }
+                    }
+
 
                     console.log(skuProducts);
                     console.log(variations);
@@ -128,6 +140,16 @@
                     $(".output").append(html);
                 }
             });
+        }
+
+        function ProductIsUnavailable(product_id, product_url) {
+            var html = '<li>';
+                html += 'Product ' + product_id;
+                html += ' <strong style="color: red">is no longer available</strong><br/>';
+                html += '<a href="' + product_url + '">View product on AliExpress</a>';
+                html += '</li>';
+
+            $(".output").append(html);
         }
 
     })(jQuery);

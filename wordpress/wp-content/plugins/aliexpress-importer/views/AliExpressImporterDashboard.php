@@ -46,6 +46,11 @@
         width: 80%;
     }
 
+    .importer #product-is-unavailable {
+        color: red;
+        display: none;
+    }
+
     .importer .product-price {
         width: 20% !important;
     }
@@ -157,6 +162,9 @@
     <p>
         https://www.aliexpress.com/item/Super-3W-External-Aquarium-Filter-Waterfall-Water-Pumps-2sizes-for-choice-Active-Carbon-Sponge-Board-for/32325415503.html?spm=2114.01010208.3.128.Oss093&ws_ab_test=searchweb0_0,searchweb201602_6_10065_10068_10000032_10000025_10000029_10000028_10060_10062_10056_10055_10054_10059_10099_10000022_10000012_10103_10102_10000015_10096_10000018_10000019_10052_10053_10107_10050_10106_10051_10000009_10084_10083_10080_10082_10081_10110_10111_10112_10113_10114_10115_10037_10033_10032_10000044_10078_10079_10077_10073_429_10000035-10050_10110_10102,searchweb201603_3,afswitch_2,single_sort_1_total_tranpro_desc&btsid=bfa1675d-02b2-4b0e-a128-3677c35324f9
     </p>
+
+    <p id="product-is-unavailable">Product is no longer available</p>
+
     <input id="product-url-input" type="text" name="product-url-input" placeholder="Enter an AliExpress product URL" value="https://www.aliexpress.com/item/Super-3W-External-Aquarium-Filter-Waterfall-Water-Pumps-2sizes-for-choice-Active-Carbon-Sponge-Board-for/32325415503.html?spm=2114.01010208.3.128.Oss093&ws_ab_test=searchweb0_0,searchweb201602_6_10065_10068_10000032_10000025_10000029_10000028_10060_10062_10056_10055_10054_10059_10099_10000022_10000012_10103_10102_10000015_10096_10000018_10000019_10052_10053_10107_10050_10106_10051_10000009_10084_10083_10080_10082_10081_10110_10111_10112_10113_10114_10115_10037_10033_10032_10000044_10078_10079_10077_10073_429_10000035-10050_10110_10102,searchweb201603_3,afswitch_2,single_sort_1_total_tranpro_desc&btsid=bfa1675d-02b2-4b0e-a128-3677c35324f9">
 
     <button id="get-product">Get Product</button>
@@ -316,6 +324,7 @@
                 storeUrl,
                 storeName,
                 productIsAffiliate = false,
+                productIsUnavailable = true,
                 skuProducts,
                 productAttributes = data.results.productAttributes;
 
@@ -329,7 +338,6 @@
                 productUrl = data.results.URL.productUrl.split("?")[0];
                 storeName = $html.find(".shop-name a").html();
                 storeUrl = $html.find(".shop-name a").attr('href');
-
                 $productImages = $html.find('.img-thumb-item img');
                 for (var i = 0; i < $productImages.length; i++) {
                     productImages.push($productImages[i].src);
@@ -338,7 +346,12 @@
                 // Get product variations
                 skuProducts = GetProductVariations(data.results.URL.product, $html);
 
+                var skuProductsFromUrl = JSON.parse(/var skuProducts=(\[.+\])/.exec(data.results.URL.product)[1]);
+
                 console.log(skuProducts);
+
+                var offline = data.results.URL.product.match(/window\.runParams\.offline\=true/g);
+                productIsUnavailable = offline != null && offline.length >= 1;
             }
 
             if(data.results.API.success) {
@@ -387,7 +400,8 @@
                 storeName,
                 productIsAffiliate,
                 skuProducts,
-                productAttributes
+                productAttributes,
+                productIsUnavailable
             );
         }
 
@@ -443,6 +457,7 @@
             $(".sub-images").html("");
             $("#product-tags").val("");
             $(".product-category").prop( "checked", false );
+            $("#product-is-unavailable").hide();
 
             $(".form-product-id").html("");
             $(".form-product-url").html("");
@@ -467,7 +482,8 @@
             storeName,
             productIsAffiliate,
             skuProducts,
-            productAttributes)
+            productAttributes,
+            productIsUnavailable)
         {
             $("#product-id").val(productId);
             $("#product-title").val(productTitle);
@@ -477,6 +493,7 @@
             $("#product-store-url").val(storeUrl);
             $("#product-store-name").val(storeName);
             $("#product-thumbnail-index").val(0);
+            if(productIsUnavailable) $("#product-is-unavailable").show();
 
             $(".form-product-id").html(productId);
             $(".form-product-url").html(productUrl);
