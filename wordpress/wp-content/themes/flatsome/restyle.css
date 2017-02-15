@@ -40,6 +40,14 @@
 
 /* CURRENCY ---------------------------------------------------------------------------------------------------------------------------- */
 
+#wcj-currency-select {
+    background: white;
+    border: 0;
+    color: #333333;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
 .currency-active {
     font-size: 0.8em;
     color: white;
@@ -249,6 +257,45 @@
     background-position: -421px -88px;
 }
 
+/* SWATCHES -------------------------------------------------------------------------------------------------------------------------------- */
+
+.variations td.label {
+    vertical-align: top;
+}
+
+.tawcvs-swatches .swatch {
+    width: auto;
+    height: auto;
+    margin: 2px;
+    padding: 2px 4px;
+    font-size: 12px;
+    border-radius: 2px;
+    -webkit-border-radius: 2px;
+    -moz-border-radius: 2px;
+    opacity: 0.7;
+}
+.tawcvs-swatches .swatch.selected {
+    border-color: #68afc0;
+    box-shadow: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+}
+
+/* BANNER -------------------------------------------------------------------------------------------------------------------------------- */
+
+.banner .text-box {
+    width: 100% !important;
+}
+
+.cyber-monday-sale {
+    width: 90%;
+    height: 300px;
+    margin-bottom: -25px;
+    background-image: url(assets/img/cyber_monday.png);
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
 
 /* FACEBOOK -------------------------------------------------------------------------------------------------------------------------------- */
 
@@ -261,6 +308,19 @@
 }
 
 /* COLORS -------------------------------------------------------------------------------------------------------------------------------- */
+
+.banner {
+    background-color: transparent;
+    box-shadow: 0px 1px 1px rgba(0,0,0,0.2);
+}
+
+.banner h3.dark-page-title {
+    color: #333333;
+}
+
+.nav-box>li.active>a, .nav-pills>li.active>a {
+    background-color: transparent;
+}
 
 .grid-tools a.quick-view {
     background-color: #68afc0;

@@ -63,6 +63,8 @@ function footer_menu_wrap() {
     return $wrap;
 }
 
+//add_filter('woocommerce_show_variation_price',      function() { return TRUE;});
+
 /* Product Page SKU ----------------------------------------------------------- */
 
 function remove_product_page_skus( $enabled ) {
